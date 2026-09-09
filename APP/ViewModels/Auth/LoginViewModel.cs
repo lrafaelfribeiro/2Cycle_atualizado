@@ -81,9 +81,9 @@ namespace APP.ViewModels
         private bool CanLogin() => !IsBusy;
 
         [RelayCommand]
-        private async Task GoToRegisterAsync()
+        private static async Task GoToRegisterAsync()
         {
-            await Shell.Current.GoToAsync(nameof(RegisterPage));
+            await Shell.Current.GoToAsync("//register");
         }
     }
 }

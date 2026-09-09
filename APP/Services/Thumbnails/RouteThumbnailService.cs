@@ -1,4 +1,5 @@
-﻿using APP.Core;
+﻿using System.Collections.Concurrent;
+using APP.Core;
 using APP.Services.Tiles;
 using SkiaSharp;
 
@@ -26,6 +27,12 @@ namespace APP.Services.Thumbnails
         private const string RouteHaloColorHex = "#1E1E1E";
         private const float RouteHaloExtraWidthPx = 2.5f;
 
+        // Um lock por rota evita duas chamadas concorrentes (ex: dois LoadAsync
+        // disparados quase ao mesmo tempo no arranque) escreverem o mesmo ficheiro
+        // em simultâneo — causa mais provável do "às vezes o mapa não aparece".
+        private readonly ConcurrentDictionary<Guid, SemaphoreSlim> _generationLocks = new();
+
+
         private readonly ITileCacheService _tileCache;
         private readonly string _cacheDir;
 
@@ -37,51 +44,91 @@ namespace APP.Services.Thumbnails
         }
 
         public async Task<string?> GetOrCreateThumbnailPathAsync(
-            Guid routeId,
-            IReadOnlyList<(double Lat, double Lon)> points,
-            int widthPx = 180,
-            int heightPx = 140,
-            CancellationToken ct = default)
+        Guid routeId,
+        IReadOnlyList<(double Lat, double Lon)> points,
+        int widthPx = 180,
+        int heightPx = 140,
+        CancellationToken ct = default)
         {
             string path = Path.Combine(_cacheDir, $"{routeId}.png");
             if (File.Exists(path))
-                return path; // cache-first: nunca recompõe a mesma rota duas vezes
+                return path;
 
             if (points == null || points.Count < 2)
                 return null;
 
-            double minLat = points.Min(p => p.Lat);
-            double maxLat = points.Max(p => p.Lat);
-            double minLon = points.Min(p => p.Lon);
-            double maxLon = points.Max(p => p.Lon);
+            var gate = _generationLocks.GetOrAdd(routeId, _ => new SemaphoreSlim(1, 1));
+            await gate.WaitAsync(ct);
+            try
+            {
+                // Outra chamada pode ter terminado a gerar enquanto esperávamos pelo lock.
+                if (File.Exists(path))
+                    return path;
 
-            int zoom = TileMath.CalculateZoomForRoute(
-                minLat, maxLat, minLon, maxLon, widthPx, heightPx,
-                minZoom: ThumbnailMinZoom,
-                maxZoom: ThumbnailMaxZoom,
-                padding: ThumbnailBoundingBoxPaddingPx);
-
-            double centerLat = (minLat + maxLat) / 2.0;
-            double centerLon = (minLon + maxLon) / 2.0;
-            var (centerX, centerY) = TileMath.LatLonToPixel(centerLat, centerLon, zoom);
-
-            double originX = centerX - widthPx / 2.0;
-            double originY = centerY - heightPx / 2.0;
-
-            using var surface = SKSurface.Create(new SKImageInfo(widthPx, heightPx));
-            var canvas = surface.Canvas;
-            canvas.Clear(SKColors.Transparent);
-
-            await DrawTilesAsync(canvas, originX, originY, widthPx, heightPx, zoom, ct);
-            DrawRoutePolyline(canvas, points, zoom, originX, originY);
-
-            using var image = surface.Snapshot();
-            using var data = image.Encode(SKEncodedImageFormat.Png, 90);
-            await using var fs = File.Create(path);
-            data.SaveTo(fs);
-
-            return path;
+                return await GenerateThumbnailAsync(routeId, points, widthPx, heightPx, path, ct);
+            }
+            finally
+            {
+                gate.Release();
+            }
         }
+
+        private async Task<string?> GenerateThumbnailAsync(
+            Guid routeId,
+            IReadOnlyList<(double Lat, double Lon)> points,
+            int widthPx,
+            int heightPx,
+            string path,
+            CancellationToken ct)
+        {
+            try
+            {
+                double minLat = points.Min(p => p.Lat);
+                double maxLat = points.Max(p => p.Lat);
+                double minLon = points.Min(p => p.Lon);
+                double maxLon = points.Max(p => p.Lon);
+
+                int zoom = TileMath.CalculateZoomForRoute(
+                    minLat, maxLat, minLon, maxLon, widthPx, heightPx,
+                    minZoom: ThumbnailMinZoom, maxZoom: ThumbnailMaxZoom, padding: ThumbnailBoundingBoxPaddingPx);
+
+                double centerLat = (minLat + maxLat) / 2.0;
+                double centerLon = (minLon + maxLon) / 2.0;
+                var (centerX, centerY) = TileMath.LatLonToPixel(centerLat, centerLon, zoom);
+
+                double originX = centerX - widthPx / 2.0;
+                double originY = centerY - heightPx / 2.0;
+
+                using var surface = SKSurface.Create(new SKImageInfo(widthPx, heightPx));
+                var canvas = surface.Canvas;
+                canvas.Clear(SKColors.Transparent);
+
+                await DrawTilesAsync(canvas, originX, originY, widthPx, heightPx, zoom, ct);
+                DrawRoutePolyline(canvas, points, zoom, originX, originY);
+
+                using var image = surface.Snapshot();
+                using var data = image.Encode(SKEncodedImageFormat.Png, 90);
+                await using var fs = File.Create(path);
+                data.SaveTo(fs);
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[RouteThumbnail] Falha a gerar thumbnail {routeId}: {ex.GetType().Name} - {ex.Message}");
+
+                // Ficheiro parcial/corrompido não deve ficar preso em cache para sempre —
+                // a próxima chamada (próximo LoadAsync) tem de poder tentar outra vez.
+                if (File.Exists(path))
+                {
+                    try { File.Delete(path); } catch { /* melhor esforço */ }
+                }
+
+                return null;
+            }
+        }
+
 
         private async Task DrawTilesAsync(
             SKCanvas canvas, double originX, double originY,

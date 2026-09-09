@@ -5,6 +5,7 @@ using APP.Services.LocalStorage;
 using APP.Services.Session;
 using APP.Services.Sharing;
 using APP.Services.Sync;
+using APP.Services.Thumbnails;
 using APP.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,6 +19,7 @@ namespace APP.ViewModels
         private readonly IUserContextService _userContextService;
         private readonly IShareCardService _shareCardService;
         private readonly IActivitySyncService _syncService;
+        private readonly IRouteThumbnailService _thumbnailService;
 
         [ObservableProperty] private bool isLoading;
         [ObservableProperty] private ObservableCollection<ActivityListItem> activities = new();
@@ -28,31 +30,42 @@ namespace APP.ViewModels
         [ObservableProperty] private string weeklyElevationDisplay = "0 m";
         [ObservableProperty] private bool hasNoActivities;
 
-        public ActivitiesViewModel(IActivityLocalRepository repository, IUserContextService userContextService, IShareCardService shareCardService, IActivitySyncService syncService)
+        public ActivitiesViewModel(
+            IActivityLocalRepository repository,
+            IUserContextService userContextService,
+            IShareCardService shareCardService,
+            IActivitySyncService syncService,
+            IRouteThumbnailService thumbnailService)
         {
             _repository = repository;
             _userContextService = userContextService;
             _shareCardService = shareCardService;
             _syncService = syncService;
+            _thumbnailService = thumbnailService;
         }
 
         [RelayCommand]
         public async Task LoadAsync()
         {
-            IsLoading = true;
+            // Só bloqueia o ecrã com o spinner na primeira vez (sem dados ainda).
+            // Em refreshes seguintes (troca de separador, IRefreshableView), os dados
+            // antigos continuam visíveis enquanto os novos chegam por trás — sem flicker.
+            bool isFirstLoad = Activities.Count == 0;
+            IsLoading = isFirstLoad;
+
             try
             {
                 var userId = await _userContextService.GetCurrentUserIdAsync();
                 if (userId is null) return;
 
-                await _syncService.SyncAsync(); 
+                await _syncService.SyncAsync();
                 var localActivities = await _repository.GetAllActivitiesAsync(userId);
 
                 var items = new List<ActivityListItem>();
                 foreach (var activity in localActivities)
                 {
                     items.Add(await ActivityListItemMapper.MapAsync(
-                        activity, _repository,
+                        activity, _repository, _thumbnailService,
                         openCommand: OpenActivityCommand,
                         optionsCommand: ShowOptionsCommand));
                 }

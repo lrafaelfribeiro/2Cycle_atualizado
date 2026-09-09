@@ -1,6 +1,7 @@
 ﻿using APP.Models;
 using APP.Models.Local;
 using APP.Services.LocalStorage;
+using APP.Services.Thumbnails;
 using Microsoft.Maui.Devices.Sensors;
 using System.Globalization;
 using System.Windows.Input;
@@ -9,19 +10,19 @@ namespace APP.Core
 {
     public static class ActivityListItemMapper
     {
+        // Maior que o tamanho de display (90x90dp) para manter nitidez em ecrãs
+        // de alta densidade — é gerado uma única vez e cacheado, o custo extra é irrelevante.
+        private const int ThumbnailSizePx = 180;
+
         public static async Task<ActivityListItem> MapAsync(
             LocalActivity activity,
             IActivityLocalRepository repository,
+            IRouteThumbnailService thumbnailService,
             ICommand? openCommand = null,
             ICommand? optionsCommand = null)
         {
-            var routePoints = new List<Location>();
-            var segments = await repository.GetSegmentsAsync(activity.Id);
-            foreach (var segment in segments)
-            {
-                var points = await repository.GetPointsAsync(segment.Id);
-                routePoints.AddRange(points.Select(p => new Location(p.Latitude, p.Longitude)));
-            }
+            var routePoints = await LoadRoutePointsAsync(activity.Id, repository);
+            string? thumbnailPath = await TryGetThumbnailAsync(activity.Id, routePoints, thumbnailService);
 
             return new ActivityListItem
             {
@@ -31,10 +32,37 @@ namespace APP.Core
                 DistanceDisplay = $"{activity.DistanceMeters / 1000.0:F1} km",
                 DurationDisplay = FormatDuration(activity.TotalTimeSeconds),
                 ElevationDisplay = $"{activity.ElevationGainMeters:F0} m",
-                RoutePoints = routePoints,
+                ThumbnailPath = thumbnailPath,
                 OpenCommand = openCommand,
                 OptionsCommand = optionsCommand
             };
+        }
+
+        private static async Task<List<Location>> LoadRoutePointsAsync(
+            Guid activityId, IActivityLocalRepository repository)
+        {
+            var routePoints = new List<Location>();
+            var segments = await repository.GetSegmentsAsync(activityId);
+
+            foreach (var segment in segments)
+            {
+                var points = await repository.GetPointsAsync(segment.Id);
+                routePoints.AddRange(points.Select(p => new Location(p.Latitude, p.Longitude)));
+            }
+
+            return routePoints;
+        }
+
+        private static Task<string?> TryGetThumbnailAsync(
+            Guid activityId, List<Location> routePoints, IRouteThumbnailService thumbnailService)
+        {
+            if (routePoints.Count < 2)
+                return Task.FromResult<string?>(null);
+
+            var latLonPoints = routePoints.Select(p => (p.Latitude, p.Longitude)).ToList();
+
+            return thumbnailService.GetOrCreateThumbnailPathAsync(
+                activityId, latLonPoints, widthPx: ThumbnailSizePx, heightPx: ThumbnailSizePx);
         }
 
         private static string BuildTitle(DateTime startedAt)

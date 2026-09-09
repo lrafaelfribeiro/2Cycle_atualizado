@@ -267,40 +267,6 @@
 
                         <Label Style="{StaticResource LabelSectionTitle}" Text="Controlo de Pausas" />
 
-
-                        <!-- PAUSA MANUAL -->
-                        <Grid ColumnDefinitions="70,*,70"
-                              ColumnSpacing="15">
-
-                            <Border Style="{StaticResource ControlCircleBorder}">
-
-                                <Label Style="{StaticResource LabelValue}" TextColor="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" Text="Ⅱ"/>
-
-                            </Border>
-
-
-                            <VerticalStackLayout Grid.Column="1"
-                                                 VerticalOptions="Center">
-
-                                <Label Style="{StaticResource LabelBody}" Text="Pausa Manual"/>
-
-                                <Label Style="{StaticResource LabelBody}" Text="Pausa sempre que quiseres."/>
-
-                            </VerticalStackLayout>
-
-
-                            <Switch Grid.Column="2"
-                                    IsToggled="True"
-                                    OnColor="{StaticResource Primary}"
-                                    ThumbColor="White"
-                                    VerticalOptions="Center" />
-
-                        </Grid>
-
-
-                        <BoxView Style="{StaticResource DividerLineHorizontal}" Margin="70,0,0,0"/>
-
-
                         <!-- RETOMAR AUTOMÁTICO -->
                         <Grid ColumnDefinitions="70,*,70"
                               ColumnSpacing="15">

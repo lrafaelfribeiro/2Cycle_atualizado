@@ -1,61 +1,68 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="APP.Views.LoginPage">
-    <ScrollView>
-        <VerticalStackLayout Padding="30,60,30,30"
+
+    <Grid>
+
+        <!-- FOTO DE FUNDO -->
+        <Image
+            Source="background_overlay.jpg"
+            Aspect="AspectFill"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"/>
+
+        <!-- CONTEÚDO -->
+        <ScrollView>
+            <VerticalStackLayout
+                Margin="0,250,0,0"
+                Padding="30,0"
                 Spacing="8">
 
-            <Label Text="2Cycle"
-                   Style="{StaticResource LabelTitle}"
-                   HorizontalOptions="Center"/>
-            <Label Text="RIDE MORE. BE BETTER."
-                   Style="{StaticResource LabelSubtitle}"
-                   CharacterSpacing="2"
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,40"/>
+                <Label Text="Email"
+                       Style="{StaticResource LabelSubtitle}"/>
 
-            <Label Text="Email"
-                    Style="{StaticResource LabelSubtitle}"/>
-            <Border Style="{StaticResource InputContainer}"
-                    Margin="0,4,0,16">
-                <Entry x:Name="EmailEntry"
-                       Keyboard="Email"
-                       VerticalOptions="Center"
-                       Text="{Binding Email}"
-                       ReturnType="Next"
-                       Completed="EmailEntry_Completed"
-                       IsEnabled="{Binding IsNotBusy}"/>
-            </Border>
+                <Border Style="{StaticResource InputContainer}"
+                        Margin="0,4,0,16">
+                    <Entry x:Name="EmailEntry"
+                           Keyboard="Email"
+                           VerticalOptions="Center"
+                           Text="{Binding Email}"
+                           ReturnType="Next"
+                           Completed="EmailEntry_Completed"
+                           IsEnabled="{Binding IsNotBusy}"/>
+                </Border>
 
-            <Label Text="Password"
-                    Style="{StaticResource LabelSubtitle}"/>
-            <Border Style="{StaticResource InputContainer}"
-                    Margin="0,4,0,8">
-                <Entry x:Name="PasswordEntry"
-                       IsPassword="True"
-                       VerticalOptions="Center"
-                       Text="{Binding Password}"
-                       ReturnType="Go"
-                       ReturnCommand="{Binding LoginCommand}"
-                       IsEnabled="{Binding IsNotBusy}"/>
-            </Border>
+                <Label Text="Password"
+                       Style="{StaticResource LabelSubtitle}"/>
 
-            <Label Style="{StaticResource LabelAlert}"
-                    x:Name="ErrorLabel"
-                    Text="{Binding ErrorMessage}"
-                    IsVisible="{Binding ErrorMessage}"
-                    Margin="0,0,0,16"/>
+                <Border Style="{StaticResource InputContainer}"
+                        Margin="0,4,0,8">
+                    <Entry x:Name="PasswordEntry"
+                           IsPassword="True"
+                           VerticalOptions="Center"
+                           Text="{Binding Password}"
+                           ReturnType="Go"
+                           ReturnCommand="{Binding LoginCommand}"
+                           IsEnabled="{Binding IsNotBusy}"/>
+                </Border>
 
-            <Button Text="Entrar"
-                    Margin="0,20,0,12"
-                    Command="{Binding LoginCommand}"/>
+                <Label Style="{StaticResource LabelAlert}"
+                       x:Name="ErrorLabel"
+                       Text="{Binding ErrorMessage}"
+                       IsVisible="{Binding ErrorMessage}"
+                       Margin="0,0,0,16"/>
 
-            <Button Text="Criar conta"
-                    Style="{StaticResource ButtonOutline}"
-                    Command="{Binding GoToRegisterCommand}"/>
+                <Button Text="Entrar"
+                        Margin="0,20,0,12"
+                        Command="{Binding LoginCommand}"/>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <Button Text="Criar conta"
+                        Style="{StaticResource ButtonOutline}"
+                        Command="{Binding GoToRegisterCommand}"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
 
 </ContentPage>

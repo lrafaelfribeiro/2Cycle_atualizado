@@ -182,16 +182,4 @@
         <Setter Property="Color" Value="{StaticResource DividerColor}" />
     </Style>
 
-    <!-- ==================== -->
-    <!-- BOTÕES               -->
-    <!-- ==================== -->
-
-    <!-- Botão circular transparente usado para emojis/ícones grandes (ex: seletor de humor) -->
-    <Style x:Key="ButtonEmojiCircle" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontSize" Value="24" />
-        <Setter Property="WidthRequest" Value="48" />
-        <Setter Property="HeightRequest" Value="48" />
-    </Style>
-
 </ResourceDictionary>

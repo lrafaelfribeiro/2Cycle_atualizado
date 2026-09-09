@@ -12,7 +12,6 @@ public partial class ActivitiesView : ContentView, IRefreshableView
         InitializeComponent();
         _viewModel = viewModel;
         BindingContext = _viewModel;
-        _ = _viewModel.LoadCommand.ExecuteAsync(null);
     }
 
     public Task RefreshAsync() => _viewModel.LoadCommand.ExecuteAsync(null);

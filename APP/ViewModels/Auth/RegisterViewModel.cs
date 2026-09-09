@@ -96,5 +96,11 @@ namespace APP.ViewModels
             !string.IsNullOrWhiteSpace(Email) &&
             IsPasswordValid &&
             AcceptedTerms;
+
+        [RelayCommand]
+        private static async Task GoToLoginAsync()
+        {
+            await Shell.Current.GoToAsync("//login");
+        }
     }
 }

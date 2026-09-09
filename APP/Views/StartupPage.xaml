@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Views.StartupPage"
-             BackgroundColor="{StaticResource TextDark}">
+             x:Class="APP.Views.StartupPage">
+
     <Grid>
+
+        <Image
+            Source="logo_splash.png"
+            WidthRequest="128"
+            HeightRequest="128"
+            Aspect="AspectFit"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"/>
+
         <Border
             x:Name="Glow"
             WidthRequest="160"
@@ -25,14 +34,12 @@
                     Text="A carregar..."
                     HorizontalTextAlignment="Center"
                     VerticalTextAlignment="Center"
-                    TextColor="{StaticResource TextPrimary}"
-                    />
-                
+                    TextColor="{StaticResource TextPrimary}"/>
+
                 <ActivityIndicator
                     IsRunning="True"
                     Color="{StaticResource TextPrimary}"
-                    Scale="0.5"
-                    />
+                    Scale="0.5"/>
             </HorizontalStackLayout>
         </Border>
 

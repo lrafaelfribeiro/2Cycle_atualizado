@@ -10,8 +10,8 @@ namespace APP.Mappers
 {
     public static class RouteListItemMapper
     {
-        private const string DistanceUnit = "km";
-        private const string ElevationUnit = "m";
+        private const string DistanceUnit = "km ↔";
+        private const string ElevationUnit = "m ▲";
         private const double MetersPerKilometer = 1000.0;
         private const string UnnamedRouteTitle = "Rota sem nome";
 
