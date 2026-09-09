@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="APP.Views.ChronometerPage"
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- CONTEÚDO -->
+        <ScrollView Grid.Row="0">
+
+            <VerticalStackLayout Spacing="0">
+
+                <!-- CABEÇALHO -->
+                <Grid x:Name="HeaderGrid"
+                      Margin="20,20"
+                      ColumnDefinitions="40,*,40">
+
+                    <Image Source="chevron_left.svg"
+                           WidthRequest="20">
+                     </Image>
+
+                    <Label Grid.Column="1"
+                           Style="{StaticResource LabelTitle}"
+                           Text="Iniciar Atividade"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+
+                    <Image Grid.Column="2"
+                           Source="settings.svg"
+                           HeightRequest="20"
+                           WidthRequest="20"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center">
+
+                        <Image.Behaviors>
+                            <toolkit:IconTintColorBehavior
+                                TintColor="{StaticResource TextPrimary}" />
+                        </Image.Behaviors>
+
+                    </Image>
+
+                </Grid>
+
+
+                <!-- TEMPO -->
+                <VerticalStackLayout Margin="0,20,0,0"
+                                     Spacing="8">
+
+                    <Label x:Name="TimerLabel"
+                           Text="{Binding MovingTimeDisplay}"
+                           FontSize="50"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextPrimary}"
+                           HorizontalOptions="Center"/>
+
+                    <Label Style="{StaticResource LabelBodyMuted}"
+                           Text="hh:mm:ss"
+                           HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+
+
+                <!-- MÉTRICAS SUPERIORES -->
+                <Grid Margin="0,35,0,0"
+                      ColumnDefinitions="*,1,*,1,*">
+
+                    <!-- DISTÂNCIA -->
+                    <VerticalStackLayout Grid.Column="0"
+                                         HorizontalOptions="Center"
+                                         Spacing="7">
+
+                        <Image Source="marker.svg"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               HorizontalOptions="Center">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="DISTÂNCIA"/>
+
+                        <Label Style="{StaticResource LabelTitle}" HorizontalOptions="Center" Text="{Binding DistanceKm, StringFormat='{0:F2}'}"/>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="km"/>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- SEPARADOR -->
+                    <BoxView Style="{StaticResource DividerLineVertical}" Grid.Column="1"/>
+
+
+                    <!-- VELOCIDADE -->
+                    <VerticalStackLayout Grid.Column="2"
+                                         HorizontalOptions="Center"
+                                         Spacing="7">
+
+                        <Image Source="gauge.svg"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               HorizontalOptions="Center">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="VELOCIDADE"/>
+
+                        <Label Style="{StaticResource LabelTitle}" HorizontalOptions="Center" Text="{Binding CurrentSpeedKmh, StringFormat='{0:F1}'}"/>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="km/h"/>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- SEPARADOR -->
+                    <BoxView Style="{StaticResource DividerLineVertical}" Grid.Column="3"/>
+
+
+                    <!-- RITMO -->
+                    <VerticalStackLayout Grid.Column="4"
+                                         HorizontalOptions="Center"
+                                         Spacing="7">
+
+                        <Image Source="clock.svg"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               HorizontalOptions="Center">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="RITMO MÉDIO"/>
+
+                        <Label Style="{StaticResource LabelTitle}" HorizontalOptions="Center" Text="{Binding PaceDisplay}"/>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="min/km"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+
+                <!-- LINHA -->
+                <BoxView Style="{StaticResource DividerLineHorizontal}" Margin="0,20"/>
+
+
+                <!-- MÉTRICAS INFERIORES -->
+                <Grid ColumnDefinitions="*,1,*"
+                      RowDefinitions="155">
+
+                    <!-- ELEVAÇÃO -->
+                    <VerticalStackLayout Grid.Column="0"
+                                         HorizontalOptions="Center"
+                                         Spacing="7">
+
+                        <Image Source="mountains.svg"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               HorizontalOptions="Center">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="ELEVAÇÃO"/>
+
+                        <Label Style="{StaticResource LabelTitle}" HorizontalOptions="Center" Text="{Binding CurrentElevationMeters, StringFormat='{0:F0}'}"/>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="m"/>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- SEPARADOR -->
+                    <BoxView Style="{StaticResource DividerLineVertical}" Grid.Column="1"/>
+
+
+                    <!-- DESNÍVEL -->
+                    <VerticalStackLayout Grid.Column="2"
+                                         HorizontalOptions="Center"
+                                         Spacing="7">
+
+                        <Image Source="elevation_up.svg"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               HorizontalOptions="Center">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="DESNÍVEL +"/>
+
+                        <Label Style="{StaticResource LabelTitle}" HorizontalOptions="Center" Text="{Binding ElevationGainMeters, StringFormat='{0:F0}'}"/>
+
+                        <Label Style="{StaticResource LabelBodyMuted}" HorizontalOptions="Center" Text="m"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+
+                <!-- BOTÕES -->
+                <Grid ColumnDefinitions="*,*"
+                      Margin="0,55,0,35">
+
+                    <!-- INICIAR / PAUSAR -->
+                    <Button Grid.Column="0"
+                            Text="{Binding PrimaryButtonText}"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="Black"
+                            BackgroundColor="{StaticResource Primary}"
+                            CornerRadius="100"
+                            WidthRequest="95"
+                            HeightRequest="95"
+                            Command="{Binding PrimaryActionCommand}"
+                            HorizontalOptions="Center" />
+
+
+                    <!-- PARAR -->
+                    <Button Grid.Column="1"
+                            Text="■"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="{StaticResource TextSecondary}"
+                            BackgroundColor="{StaticResource BackgroundSecondary}"
+                            CornerRadius="100"
+                            WidthRequest="95"
+                            HeightRequest="95"
+                            Command="{Binding StopCommand}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
+
+                </Grid>
+
+
+                <!-- CONTROLO DE PAUSAS -->
+                <Border BackgroundColor="{StaticResource SurfaceAlt}"
+                        Stroke="{StaticResource DividerColor}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 28"
+                        Padding="30,25"
+                        Margin="0,0,0,30">
+
+                    <VerticalStackLayout Spacing="20">
+
+                        <Label Style="{StaticResource LabelSectionTitle}" Text="Controlo de Pausas" />
+
+
+                        <!-- PAUSA MANUAL -->
+                        <Grid ColumnDefinitions="70,*,70"
+                              ColumnSpacing="15">
+
+                            <Border Style="{StaticResource ControlCircleBorder}">
+
+                                <Label Style="{StaticResource LabelValue}" TextColor="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" Text="Ⅱ"/>
+
+                            </Border>
+
+
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center">
+
+                                <Label Style="{StaticResource LabelBody}" Text="Pausa Manual"/>
+
+                                <Label Style="{StaticResource LabelBody}" Text="Pausa sempre que quiseres."/>
+
+                            </VerticalStackLayout>
+
+
+                            <Switch Grid.Column="2"
+                                    IsToggled="True"
+                                    OnColor="{StaticResource Primary}"
+                                    ThumbColor="White"
+                                    VerticalOptions="Center" />
+
+                        </Grid>
+
+
+                        <BoxView Style="{StaticResource DividerLineHorizontal}" Margin="70,0,0,0"/>
+
+
+                        <!-- RETOMAR AUTOMÁTICO -->
+                        <Grid ColumnDefinitions="70,*,70"
+                              ColumnSpacing="15">
+
+                            <Border Style="{StaticResource ControlCircleBorder}">
+
+                                <Label Style="{StaticResource LabelValue}" TextColor="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" Text="▶"/>
+
+                            </Border>
+
+
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center">
+
+                                <Label Style="{StaticResource LabelBody}" Text="Retomar Automático"/>
+
+                                <Label Style="{StaticResource LabelBody}" Text="Retoma automaticamente quando voltares a pedalar."/>
+
+                            </VerticalStackLayout>
+
+
+                            <Switch Grid.Column="2"
+                                    IsToggled="{Binding AutoPauseEnabled}"
+                                    OnColor="{StaticResource Primary}"
+                                    ThumbColor="{StaticResource TextPrimary}"
+                                    VerticalOptions="Center" />
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

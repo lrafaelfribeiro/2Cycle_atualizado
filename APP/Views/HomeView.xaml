@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.HomeView"
+             xmlns:components="clr-namespace:APP.Components"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             >
+        <ScrollView
+            Padding="20,0,20,110">
+        <VerticalStackLayout
+            Spacing="20">
+            <VerticalStackLayout
+                Grid.Column="0"
+                Spacing="50"
+                Padding="0,0,0,0">
+
+                <VerticalStackLayout
+                    Spacing="10">
+                    <Label Style="{StaticResource LabelSectionTitle}" Text="{Binding GreetingName, StringFormat='Olá, {0}!'}"/>
+                    <Label
+                        Style="{StaticResource LabelSubtitle}"
+                        Text="Pronto para superar novos limites hoje?"/>
+    
+                </VerticalStackLayout>
+
+                <Button
+                    Text="Iniciar Atividade      >"
+                    FontFamily="InterBold"
+                    Clicked="OnStartActivityClicked"/>
+
+            </VerticalStackLayout>
+
+            <!--           ESTATISTICAS                 -->
+            <components:StatisticsView 
+                WeeklyStats="{Binding WeeklyStats}"/>
+
+            <!--          ATIVIDADE RECENTE                  -->
+            <Grid
+                RowDefinitions="*, *"
+                RowSpacing="15"
+                HorizontalOptions="Fill">
+                <Grid 
+                    Grid.Row="0"
+                    ColumnDefinitions="*, Auto">
+                    <Label
+                        Grid.Column="0"
+                        Style="{StaticResource LabelSectionTitle}"
+                        Text="Atividade Recente"
+                        />
+
+                    <Label
+                        Grid.Column="1"
+                        Style="{StaticResource LabelSubtitle}"
+                        Text="Ver todas"
+                        TextColor="{StaticResource Primary}">
+
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer
+                                 Tapped="OnActivitiesTapped"/>
+                        </Label.GestureRecognizers>
+
+                    </Label>
+
+
+                </Grid>
+                <Border
+                    Grid.Row="1"
+                    Stroke="{StaticResource BorderStroke}"
+                    StrokeThickness="0.5"
+                    StrokeShape="RoundRectangle 20"
+                    HorizontalOptions="Fill"
+                    BackgroundColor="{StaticResource BackgroundSecondary}"
+                    Padding="20">
+                    <Label
+                        Text="Nenhuma atividade recente"
+                        TextColor="{StaticResource TextDisabled}"/>
+                </Border>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

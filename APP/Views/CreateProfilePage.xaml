@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.CreateProfilePage"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+    <ScrollView>
+        <VerticalStackLayout Padding="30,50,30,30" Spacing="8">
+
+            <Label Text="Completa o teu perfil"
+                   Style="{StaticResource LabelTitle}"
+                   HorizontalOptions="Center" />
+
+            <Label Text="Usamos isto para calcular estatísticas mais precisas dos teus treinos."
+                   Style="{StaticResource LabelSubtitle}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,30" />
+
+            <Label Text="Data de Nascimento" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <DatePicker x:Name="DatePickerBirth"
+                            Date="{Binding BirthDate}"
+                            TextColor="{StaticResource TextPrimary}" />
+            </Border>
+
+            <Label Text="Altura (cm)" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <Entry Placeholder="Ex: 175" Keyboard="Numeric" Text="{Binding HeightCm}" IsEnabled="{Binding IsNotBusy}" />
+            </Border>
+
+            <Label Text="Peso Atual (kg)" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <Entry Placeholder="Ex: 70" Keyboard="Numeric" Text="{Binding InitialWeightKg}" IsEnabled="{Binding IsNotBusy}" />
+            </Border>
+
+            <Label Text="Peso Pretendido (kg)" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <Entry Placeholder="Ex: 68" Keyboard="Numeric" Text="{Binding TargetWeightKg}" IsEnabled="{Binding IsNotBusy}" />
+            </Border>
+
+            <Label Text="Sexo" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <Picker SelectedIndex="{Binding SelectedSexIndex}" TextColor="{StaticResource TextPrimary}">
+                    <Picker.Items>
+                        <x:String>Masculino</x:String>
+                        <x:String>Feminino</x:String>
+                    </Picker.Items>
+                </Picker>
+            </Border>
+
+            <Label Text="Dias de Atividade por Semana" Style="{StaticResource LabelSubtitle}" />
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,4,0,20">
+                <Label Grid.Column="0" Style="{StaticResource LabelSectionTitle}" Text="{Binding ActivityDaysPerWeek}" WidthRequest="30" />
+                <Slider Grid.Column="1" Minimum="0" Maximum="7" Value="{Binding ActivityDaysPerWeek}" MinimumTrackColor="{StaticResource Primary}" />
+            </Grid>
+
+            <Label Style="{StaticResource LabelAlert}" Text="{Binding ErrorMessage}" IsVisible="{Binding ErrorMessage}" Margin="0,0,0,16"/>
+
+            <Button Text="Guardar e Continuar"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,4,0,12" />
+
+            <Button Text="Preencher mais tarde"
+                    Style="{StaticResource ButtonOutline}"
+                    Command="{Binding SkipCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

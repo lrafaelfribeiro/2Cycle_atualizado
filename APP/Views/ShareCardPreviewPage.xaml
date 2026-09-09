@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.ShareCardPreviewPage"
+             BackgroundColor="{StaticResource BackgroundPrimary}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto"
+            Padding="0,20,0,30">
+
+        <!-- CABEÇALHO -->
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="*,Auto,*"
+            Padding="20,0"
+            HeightRequest="44">
+
+            <ImageButton Grid.Column="0"
+                         Source="chevron_left.svg"
+                         BackgroundColor="Transparent"
+                         HeightRequest="36"
+                         WidthRequest="36"
+                         Clicked="OnBackClicked"
+                         HorizontalOptions="Start"/>
+
+            <Label
+                Grid.Column="1"
+                Style="{StaticResource LabelSectionTitle}"
+                Text="Partilhar Atividade"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+
+        </Grid>
+
+        <!-- PREVIEW -->
+        <Border
+            Grid.Row="1"
+            StrokeShape="RoundRectangle 18"
+            Stroke="{StaticResource BorderStroke}"
+            StrokeThickness="0.5"
+            BackgroundColor="{StaticResource SurfaceAlt}"
+            Margin="20"
+            Padding="0">
+
+            <Image
+                x:Name="PreviewImage"
+                Aspect="AspectFit"/>
+
+        </Border>
+
+        <!-- BOTÃO PARTILHAR -->
+        <Button Grid.Row="2"
+                Text="Partilhar"
+                Margin="20,0"
+                HeightRequest="55"
+                CornerRadius="16"
+                BackgroundColor="{StaticResource Primary}"
+                TextColor="Black"
+                FontAttributes="Bold"
+                FontSize="17"
+                Clicked="OnShareClicked"/>
+
+    </Grid>
+</ContentPage>

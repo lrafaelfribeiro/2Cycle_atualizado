@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.StartActivityView"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:models="clr-namespace:APP.Models"
+             >
+    <Grid RowDefinitions="*,Auto" >
+
+        <!-- CONTEÚDO -->
+        <ScrollView Grid.Row="0"
+                    Padding="0,0,0,70">
+
+            <VerticalStackLayout>
+
+                <!-- LOGO -->
+                <Image
+                    Source="logo.png"
+                    HeightRequest="120"
+                    Aspect="AspectFit"
+                    HorizontalOptions="Center"
+                    BackgroundColor="Transparent"/>
+
+                <!-- TÍTULO -->
+                <VerticalStackLayout
+                    Spacing="8"
+                    HorizontalOptions="Center">
+
+                    <Label
+                        Style="{StaticResource LabelTitle}"
+                        Text="Pronto para pedalar?"
+                        HorizontalTextAlignment="Center"/>
+
+                    <Label
+                        Style="{StaticResource LabelBodyMuted}"
+                        Text="Regista a tua atividade e supera os teus limites."
+                        HorizontalTextAlignment="Center"/>
+
+                </VerticalStackLayout>
+
+                <Border
+                    HeightRequest="360"
+                    StrokeThickness="0">
+
+                    <Grid>
+                        <Image
+                            Source="cycling_road.jpg"
+                            Aspect="AspectFill"
+                            Opacity="0.8"/>
+
+
+                            <!-- Clima -->
+                            <CollectionView 
+                                Margin="0,10,0,0"
+                                ItemsSource="{Binding Forecast}"
+                                HeightRequest="90"
+                                VerticalOptions="Start"
+                                HorizontalOptions="Center">
+                                <CollectionView.ItemsLayout>
+                                    
+                                    <LinearItemsLayout
+                                        Orientation="Horizontal"
+                                        ItemSpacing="14"/>
+                                    
+                                </CollectionView.ItemsLayout>
+                                
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate 
+                                        x:DataType="models:HourlyForecastItem">
+                                        
+                                        <VerticalStackLayout
+                                            Spacing="4"
+                                            WidthRequest="60">
+
+                                            <Label
+                                                Style="{StaticResource LabelSubtitle}"
+                                                Text="{Binding TimeLabel}"
+                                                HorizontalTextAlignment="Center"/>
+
+                                            <Label 
+                                                Text="{Binding Icon}" 
+                                                FontSize="24"
+                                                HorizontalTextAlignment="Center"/>
+
+                                            <Label
+                                                Style="{StaticResource LabelBody}"
+                                                Text="{Binding TemperatureDisplay}"
+                                                FontAttributes="Bold"
+                                                HorizontalTextAlignment="Center"/>
+
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                        <!-- Texto inferior -->
+                        <VerticalStackLayout
+                            VerticalOptions="End"
+                            Padding="20">
+
+                            <Label Style="{StaticResource LabelSectionTitle}" Text="A tua próxima aventura começa aqui"/>
+
+                            <Label Style="{StaticResource LabelBody}" Text="Explora novos percursos"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </Border>
+
+                <VerticalStackLayout
+                    Padding="20, 20, 20, 0"
+                    Spacing="12">
+
+                    <!-- AVISO — só aparece quando o GPS está desativado -->
+                    <Border StrokeShape="RoundRectangle 12"
+                            BackgroundColor="#332A1A00"
+                            Stroke="{StaticResource AccentGold}"
+                            StrokeThickness="1"
+                            Padding="14,10"
+                            IsVisible="{Binding IsLocationAvailable, Converter={StaticResource InverseBoolConverter}}">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Style="{StaticResource LabelBody}"
+                                   Text="Ativa o GPS para poderes iniciar uma atividade."
+                                   TextColor="{StaticResource AccentGold}"
+                                   VerticalOptions="Center"
+                                   LineBreakMode="WordWrap"/>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- BOTÃO PRINCIPAL -->
+                    <Button
+                        Text="Iniciar Atividade"
+                        HeightRequest="64"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="Black"
+                        FontSize="20"
+                        FontAttributes="Bold"
+                        CornerRadius="20"
+                        Command="{Binding StartActivityCommand}" 
+                        IsVisible="{Binding IsLocationAvailable}" />
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <Grid 
+            Grid.Row="0" 
+            Grid.RowSpan="2"
+            IsVisible="{Binding IsLoading}"
+            BackgroundColor="{StaticResource OverlayScrim}">
+
+            <ActivityIndicator 
+                            IsRunning="{Binding IsLoading}"
+                            Color="{StaticResource Primary}"
+                            WidthRequest="50"
+                            HeightRequest="50"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+
+        </Grid>
+    </Grid>
+</ContentView>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:APP.ViewModels"
+             xmlns:models="clr-namespace:APP.Models"
+             xmlns:controls="clr-namespace:APP.Controls"
+             xmlns:components="clr-namespace:APP.Components"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="APP.Views.ActivitiesView"
+             x:DataType="vm:ActivitiesViewModel"
+             x:Name="PageRoot">
+
+    <ScrollView Padding="0,0,0,90">
+        <VerticalStackLayout Padding="20,0,20,20"
+                Spacing="20">
+
+            <Label
+                Style="{StaticResource LabelTitle}"
+                Text="Atividades"/>
+
+            <!-- RESUMO SEMANAL -->
+            <Label Style="{StaticResource LabelSectionTitle}"
+                    Text="Resumo da Semana"/>
+
+            <Grid RowDefinitions="*,*"
+                    RowSpacing="8">
+                <Grid
+                    Grid.Row="0"
+                    ColumnDefinitions="*, *">
+
+                    <Border Style="{StaticResource StatCardBorder}"
+                            Grid.Column="0">
+
+                        <components:StatCardView
+                            Image="bike.svg"
+                            Label="Atividades"
+                            Value="{Binding WeeklyCount}"/>
+
+                    </Border>
+
+                    <Border Style="{StaticResource StatCardBorder}"
+                            Grid.Column="1">
+
+                        <components:StatCardView
+                            Image="road.svg"
+                            Label="Distância"
+                            Value="{Binding WeeklyDistanceDisplay}"/>
+
+                    </Border>
+
+                </Grid>
+
+                <Grid
+                    Grid.Row="1"
+                    ColumnDefinitions="*, *">
+
+                    <Border Style="{StaticResource StatCardBorder}"
+                            Grid.Column="0">
+
+                        <components:StatCardView
+                            Image="clock.svg"
+                            Label="Tempo"
+                            Value="{Binding WeeklyTimeDisplay}"/>
+                    </Border>
+
+                    <Border Style="{StaticResource StatCardBorder}"
+                            Grid.Column="1">
+
+                        <components:StatCardView
+                            Image="mountains.svg"
+                            Label="Elevação"
+                            Value="{Binding WeeklyElevationDisplay}"/>
+
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- LISTA -->
+            <Label Style="{StaticResource LabelSectionTitle}"
+                    Text="Atividades"/>
+
+            <CollectionView
+                ItemsSource="{Binding Activities}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ActivityListItem">
+                            <components:CardShell
+                                TapCommand="{Binding OpenCommand}"
+                                TapCommandParameter="{Binding Id}">
+
+                                <components:CardShell.LeftContent>
+                                    <controls:RouteMiniMapView
+                                        RoutePoints="{Binding RoutePoints}"
+                                        HeightRequest="90"
+                                            WidthRequest="90"/>
+                                </components:CardShell.LeftContent>
+
+                                <components:CardShell.DetailsContent>
+                                    <VerticalStackLayout Spacing="4">
+                                        <Label Text="{Binding Title}"
+                                                FontFamily="InterBold"/>
+                                        <Label Style="{StaticResource LabelSubtitle}"
+                                                Text="{Binding DateDisplay}"/>
+                                        <HorizontalStackLayout Spacing="8"
+                                                Margin="0,6,0,0">
+                                            <Label Text="{Binding DistanceDisplay}"
+                                                    FontFamily="InterBold"/>
+                                            <Label Style="{StaticResource LabelBody}"
+                                                    Text="{Binding DurationDisplay}"/>
+                                            <HorizontalStackLayout Spacing="2">
+                                                <Label Style="{StaticResource LabelBody}"
+                                                        Text="{Binding ElevationDisplay}"/>
+                                                <Image Source="elevation_up.png"
+                                                        HeightRequest="14">
+                                                    <Image.Behaviors>
+                                                        <toolkit:IconTintColorBehavior TintColor="{StaticResource Primary}"/>
+                                                    </Image.Behaviors>
+                                                </Image>
+                                            </HorizontalStackLayout>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </components:CardShell.DetailsContent>
+
+                                <components:CardShell.TrailingContent>
+                                    <Label Text="⋯"
+                                            FontSize="22"
+                                            TextColor="{StaticResource TextSecondary}"
+                                        VerticalOptions="Start"
+                                            Padding="8">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding OptionsCommand}"
+                                                    CommandParameter="{Binding Id}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </components:CardShell.TrailingContent>
+
+                            </components:CardShell>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                Margin="0,20,0,0"
+                IsVisible="{Binding HasNoActivities}">
+
+                <Label
+                    Text="Ainda não tens atividades gravadas."
+                    TextColor="{StaticResource TextSecondary}"/>
+
+                <Label
+                    HorizontalOptions="Center"
+                    Text="Iniciar uma atividade >"
+                    TextColor="{StaticResource Primary}"
+                    TextDecorations="Underline"/>
+
+            </VerticalStackLayout>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

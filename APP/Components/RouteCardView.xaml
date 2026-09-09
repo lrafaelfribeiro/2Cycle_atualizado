@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Components.RouteCardView"
+             x:Name="Root">
+
+    <Border
+        Padding="10">
+
+        <Grid
+            ColumnDefinitions="90,*,Auto"
+            ColumnSpacing="12">
+
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer
+                    Command="{Binding TapCommand, Source={x:Reference Root}}"
+                    CommandParameter="{Binding Item, Source={x:Reference Root}}"/>
+            </Grid.GestureRecognizers>
+
+            <Border
+                Grid.Column="0"
+                StrokeShape="RoundRectangle 8"
+                HeightRequest="70"
+                WidthRequest="90"
+                Padding="0">
+
+                <Image
+                    Source="{Binding ThumbnailSource, Source={x:Reference Root}}"
+                    Aspect="AspectFill"/>
+
+            </Border>
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                VerticalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Style="{StaticResource LabelBody}"
+                    FontAttributes="Bold"
+                    Text="{Binding Title, Source={x:Reference Root}}"/>
+
+                <HorizontalStackLayout
+                    Spacing="12">
+
+                    <Label
+                        Style="{StaticResource LabelSubtitle}"
+                        Text="{Binding DistanceLabel, Source={x:Reference Root}}"/>
+
+                    <Label
+                        Style="{StaticResource LabelSubtitle}"
+                        Text="{Binding ElevationLabel, Source={x:Reference Root}}"/>
+
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="1"
+                        Margin="0,2,0,0">
+                    <Image Source="{Binding Difficulty, Source={x:Reference Root}, Converter={StaticResource DifficultyToStarFillConverter}, ConverterParameter='1'}"
+                            HeightRequest="12"
+                            WidthRequest="12"/>
+                    <Image Source="{Binding Difficulty, Source={x:Reference Root}, Converter={StaticResource DifficultyToStarFillConverter}, ConverterParameter='2'}"
+                            HeightRequest="12"
+                            WidthRequest="12"/>
+                    <Image Source="{Binding Difficulty, Source={x:Reference Root}, Converter={StaticResource DifficultyToStarFillConverter}, ConverterParameter='3'}"
+                            HeightRequest="12"
+                            WidthRequest="12"/>
+                    <Image Source="{Binding Difficulty, Source={x:Reference Root}, Converter={StaticResource DifficultyToStarFillConverter}, ConverterParameter='4'}"
+                            HeightRequest="12"
+                            WidthRequest="12"/>
+                    <Image Source="{Binding Difficulty, Source={x:Reference Root}, Converter={StaticResource DifficultyToStarFillConverter}, ConverterParameter='5'}"
+                            HeightRequest="12"
+                            WidthRequest="12"/>
+
+                    <Border
+                        IsVisible="{Binding IsProDifficulty, Source={x:Reference Root}}"
+                        Stroke="{StaticResource Primary}"
+                        StrokeThickness="1"
+                        BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 4"
+                        Padding="4,0"
+                        Margin="4,0,0,0">
+                        <Label
+                            Text="PRO"
+                            TextColor="{StaticResource Primary}"
+                            FontFamily="InterBold"
+                            FontSize="9"/>
+                    </Border>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+            <VerticalStackLayout
+                Grid.Column="2"
+                VerticalOptions="Center"
+                HorizontalOptions="End"
+                Spacing="8">
+
+                <Label 
+                    Text="⋯"
+                    FontSize="22"
+                    TextColor="{StaticResource TextSecondary}"
+                    VerticalOptions="Start"
+                    Padding="8">
+
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer 
+                            Command="{Binding OptionsCommand, Source={x:Reference Root}}"
+                            CommandParameter="{Binding Item, Source={x:Reference Root}}"/>
+                    </Label.GestureRecognizers>
+
+                </Label>
+
+                <Label
+                    Text="{Binding IsFavorite, Source={x:Reference Root}, Converter={StaticResource FavoriteStarConverter}}"
+                    FontSize="22"
+                    TextColor="{StaticResource Primary}"
+                    HorizontalTextAlignment="Center">
+
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding ToggleFavoriteCommand, Source={x:Reference Root}}"
+                            CommandParameter="{Binding Item, Source={x:Reference Root}}"/>
+                    </Label.GestureRecognizers>
+
+                </Label>
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </Border>
+</ContentView>

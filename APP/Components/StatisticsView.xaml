@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="APP.Components.StatisticsView"
+    x:Name="Root"
+    >
+
+    <Border>
+
+        <Grid
+            RowDefinitions="Auto,Auto"
+            RowSpacing="10">
+
+            <!-- Cabeçalho -->
+            <Grid
+                Grid.Row="0"
+                ColumnDefinitions="*,Auto"
+                Padding="20,20,20,0">
+
+                <Label
+                    Grid.Column="0"
+                    Style="{StaticResource LabelSubtitle}"
+                    Text="Esta semana"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start" />
+
+                <!-- <Label
+                    Grid.Column="1"
+                    Text="Resumo  >"
+                    FontSize="12"
+                    TextColor="{StaticResource TextSecondary}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="End" /> -->
+
+            </Grid>
+
+
+            <!-- Estatísticas -->
+            <Grid
+                Grid.Row="1"
+                ColumnDefinitions="*,1,*,1,*"
+                Margin="10,10"
+                ColumnSpacing="0">
+
+                <!-- ==================== -->
+                <!-- DISTÂNCIA             -->
+                <!-- ==================== -->
+
+                <Grid
+                    Grid.Column="0"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="10"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Center">
+
+                    <Border
+                        Grid.Row="0"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        HorizontalOptions="Center"
+                        StrokeThickness="2"
+                        StrokeShape="RoundRectangle 100"
+                        BackgroundColor="{StaticResource BackgroundPrimary}">
+
+                        <Image
+                            Source="bike.svg"
+                            Aspect="AspectFit"
+                            Margin="7">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                    </Border>
+
+                    <VerticalStackLayout
+                        Grid.Row="1"
+                        Spacing="0"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                        <Label
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center">
+
+                            <Label.FormattedText>
+                                <FormattedString>
+
+                                    <Span
+                                        Text="{Binding Source={x:Reference Root}, Path=WeeklyStats.DistanceKm, StringFormat='{0:F1}'}"
+                                        FontAttributes="Bold"
+                                        FontSize="20" />
+
+                                    <Span
+                                        Text=" km" />
+
+                                </FormattedString>
+                            </Label.FormattedText>
+
+                        </Label>
+
+                        <Label Style="{StaticResource LabelSmall}" HorizontalOptions="Center" HorizontalTextAlignment="Center" Text="Distância"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+
+                <!-- Separador -->
+                <BoxView
+                    Grid.Column="1"
+                    WidthRequest="1"
+                    HeightRequest="40"
+                    Color="{StaticResource TextDisabled}"
+                    Opacity="0.5"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+
+
+                <!-- ==================== -->
+                <!-- TEMPO                 -->
+                <!-- ==================== -->
+
+                <Grid
+                    Grid.Column="2"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="10"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Center">
+
+                    <Border Style="{StaticResource IconBadgeCircleBorder}" Grid.Row="0">
+
+                        <Image
+                            Source="clock.svg"
+                            Aspect="AspectFit"
+                            Margin="7">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource TextSecondary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                    </Border>
+
+                    <VerticalStackLayout
+                        Grid.Row="1"
+                        Spacing="0"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                        <Label
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center">
+
+                            <Label.FormattedText>
+                                <FormattedString>
+
+                                    <Span
+                                        Text="{Binding Source={x:Reference Root}, Path=WeeklyStats.MovingTime.Hours}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontAttributes="Bold"
+                                        FontSize="20" />
+
+                                    <Span
+                                        Text="h "
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontSize="12" />
+
+                                    <Span
+                                        Text="{Binding WeeklyStats.MovingTime.Minutes}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontAttributes="Bold"
+                                        FontSize="20" />
+
+                                    <Span
+                                        Text="m"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontSize="12" />
+
+                                </FormattedString>
+                            </Label.FormattedText>
+
+                        </Label>
+
+                        <Label Style="{StaticResource LabelSmall}" HorizontalOptions="Center" HorizontalTextAlignment="Center" Text="Tempo"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+
+                <!-- Separador -->
+                <BoxView
+                    Grid.Column="3"
+                    WidthRequest="1"
+                    HeightRequest="40"
+                    Color="{StaticResource TextDisabled}"
+                    Opacity="0.5"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+
+
+                <!-- ==================== -->
+                <!-- ELEVAÇÃO              -->
+                <!-- ==================== -->
+
+                <Grid
+                    Grid.Column="4"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="10"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Center">
+
+                    <Border Style="{StaticResource IconBadgeCircleBorder}" Grid.Row="0">
+
+                        <Image
+                            Source="line_up.svg"
+                            Aspect="AspectFit"
+                            Margin="7">
+
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior
+                                    TintColor="{StaticResource Primary}" />
+                            </Image.Behaviors>
+
+                        </Image>
+
+                    </Border>
+
+                    <VerticalStackLayout
+                        Grid.Row="1"
+                        Spacing="0"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                        <Label
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center">
+
+                            <Label.FormattedText>
+                                <FormattedString>
+
+                                    <Span
+                                        Text="{Binding Source={x:Reference Root}, Path=WeeklyStats.ElevationGainMeters}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontAttributes="Bold"
+                                        FontSize="20" />
+
+                                    <Span
+                                        Text=" m"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        FontSize="12" />
+
+                                </FormattedString>
+                            </Label.FormattedText>
+
+                        </Label>
+
+                        <Label Style="{StaticResource LabelSmall}" HorizontalOptions="Center" HorizontalTextAlignment="Center" Text="Ganho de elevação"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</ContentView>

@@ -1,0 +1,40 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:APP.Views"
+             x:Class="APP.App"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:components="clr-namespace:APP.Components"
+             xmlns:converters="clr-namespace:APP.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BoolToAccentOrMutedConverter x:Key="BoolToDestructiveColorConverter" />
+            <converters:BoolToAccentOrMutedConverter x:Key="BoolToAccentOrMutedConverter" />
+            <converters:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:ModeButtonBgConverter x:Key="ModeButtonBgConverter" />
+            <converters:ModeButtonTextConverter x:Key="ModeButtonTextConverter" />
+            <converters:SwapEnabledColorConverter x:Key="SwapEnabledColorConverter" />
+            <converters:FilePathToImageSourceConverter x:Key="FilePathToImageSourceConverter"/>
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter"/>
+            <converters:FavoriteStarConverter x:Key="FavoriteStarConverter"/>
+            <converters:BoolToTabColorConverter x:Key="BoolToTabColorConverter"/>
+            <converters:BoolToIconSourceConverter x:Key="BoolToIconSourceConverter" />
+            <converters:DifficultyToStarFillConverter x:Key="DifficultyToStarFillConverter" />
+
+            <components:HexagonDrawable
+                x:Key="HexagonDrawable"
+                StrokeColor="{StaticResource Primary}"
+                FillColor="Transparent"
+                StrokeWidth="3" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
+

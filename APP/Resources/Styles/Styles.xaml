@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundPrimary}" />
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+        <Setter Property="FontFamily" Value="InterBold" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="52" />
+    </Style>
+
+    <Style x:Key="ButtonOutline" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{StaticResource Primary}" />
+        <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+        <Setter Property="BorderWidth" Value="1.5" />
+        <Setter Property="FontFamily" Value="InterMedium" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="52" />
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style x:Key="LabelTitle" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterBold" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="LabelSubtitle" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterMedium" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+    </Style>
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource TextDisabled}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style x:Key="InputContainer" TargetType="Border">
+        <Setter Property="HeightRequest" Value="52" />
+        <Setter Property="Padding" Value="10, 0"/>
+    </Style>
+
+    <Style TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource BorderStroke}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+    </Style>
+
+    <!-- ==================== -->
+    <!-- ESCALA TIPOGRÁFICA   -->
+    <!-- ==================== -->
+    <!-- Regra do projeto: só HÁ estes tamanhos de texto na app. Nenhuma página deve usar -->
+    <!-- FontSize/FontFamily "à mão" num Label — usa sempre um destes Styles. -->
+    <!-- Pequenas variações pontuais (negrito, cor, alinhamento) fazem-se com um Setter local -->
+    <!-- por cima do Style (ex: Style="{StaticResource LabelBody}" FontAttributes="Bold"), -->
+    <!-- em vez de criar mais um Style novo só por causa disso. -->
+    <!-- NOTA: como estes estilos têm x:Key, substituem por completo o Style implícito de -->
+    <!-- Label acima (não há merge de Setters), por isso repetem sempre FontFamily/TextColor. -->
+
+    <!-- 28px — título grande de página/ecrã (ex: "Perfil", "Rotas", "Iniciar Atividade", nome de uma rota) -->
+    <!-- (Style já existia — ver acima, mantido para não duplicar) -->
+
+    <!-- 18px — subtítulo / cabeçalho de secção dentro da página (ex: "Resumo da Semana", "Zonas de Velocidade") -->
+    <Style x:Key="LabelSectionTitle" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterBold" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <!-- 20px — valor numérico em destaque (estatísticas, distância, tempo, etc.) -->
+    <Style x:Key="LabelValue" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <!-- 14px — texto normal/corpo, cor de texto principal -->
+    <Style x:Key="LabelBody" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <!-- 14px — igual ao LabelBody mas esbatido (descrições, datas, texto secundário) -->
+    <Style x:Key="LabelBodyMuted" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+    </Style>
+
+    <!-- 12px — legenda/caption (rótulos por baixo de valores, hints de formulário) -->
+    <!-- (Style já existia como "LabelSubtitle" — ver acima, mantido para não duplicar) -->
+
+    <!-- 12px — mensagem de erro/alerta -->
+    <Style x:Key="LabelAlert" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextColor" Value="{StaticResource TextDanger}" />
+    </Style>
+
+    <!-- 10px — texto muito pequeno/discreto (o mais pequeno da app) -->
+    <Style x:Key="LabelSmall" TargetType="Label">
+        <Setter Property="FontFamily" Value="InterRegular" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="TextColor" Value="{StaticResource TextDisabled}" />
+    </Style>
+
+    <!-- ==================== -->
+    <!-- CARTÕES / BORDERS    -->
+    <!-- ==================== -->
+
+    <!-- Cartão de estatística pequeno (grelha 2x2 de resumo) -->
+    <Style x:Key="StatCardBorder" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundSecondary}" />
+        <Setter Property="Stroke" Value="{StaticResource BorderStroke}" />
+        <Setter Property="StrokeThickness" Value="0.5" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+        <Setter Property="Padding" Value="10" />
+    </Style>
+
+    <!-- Painel/cartão em destaque com fundo mais escuro (bottom sheets, cartões de secção) -->
+    <Style x:Key="PanelCardBorder" TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
+        <Setter Property="Stroke" Value="{StaticResource BorderStroke}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <!-- Badge circular com ícone (ex: setas de elevação) -->
+    <Style x:Key="IconBadgeCircleBorder" TargetType="Border">
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundPrimary}" />
+        <Setter Property="Stroke" Value="{StaticResource BorderStroke}" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 100" />
+    </Style>
+
+    <!-- Círculo de botão de controlo (play/pause) com contorno Primary -->
+    <Style x:Key="ControlCircleBorder" TargetType="Border">
+        <Setter Property="WidthRequest" Value="60" />
+        <Setter Property="HeightRequest" Value="60" />
+        <Setter Property="Stroke" Value="{StaticResource Primary}" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 35" />
+    </Style>
+
+    <!-- ==================== -->
+    <!-- SEPARADORES          -->
+    <!-- ==================== -->
+
+    <!-- Linha divisória horizontal fina (ex: entre opções de um menu) -->
+    <Style x:Key="DividerLineHorizontal" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="0.5" />
+        <Setter Property="Color" Value="{StaticResource DividerColor}" />
+    </Style>
+
+    <!-- Linha divisória vertical fina (ex: entre métricas do cronómetro) -->
+    <Style x:Key="DividerLineVertical" TargetType="BoxView">
+        <Setter Property="WidthRequest" Value="1" />
+        <Setter Property="Color" Value="{StaticResource DividerColor}" />
+    </Style>
+
+    <!-- ==================== -->
+    <!-- BOTÕES               -->
+    <!-- ==================== -->
+
+    <!-- Botão circular transparente usado para emojis/ícones grandes (ex: seletor de humor) -->
+    <Style x:Key="ButtonEmojiCircle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="WidthRequest" Value="48" />
+        <Setter Property="HeightRequest" Value="48" />
+    </Style>
+
+</ResourceDictionary>

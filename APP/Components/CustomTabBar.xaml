@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="APP.Components.CustomTabBar"
+    HeightRequest="90"
+    VerticalOptions="End"
+    Background="Transparent">
+
+    <ContentView.Resources>
+
+        <Style x:Key="TabLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+            <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        </Style>
+
+        <Style x:Key="TabIconStyle" TargetType="Image">
+            <Setter Property="WidthRequest" Value="24" />
+            <Setter Property="HeightRequest" Value="24" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+    </ContentView.Resources>
+
+    <Border
+        Margin="20,0"
+        BackgroundColor="Transparent"
+        HorizontalOptions="Fill"
+        VerticalOptions="End"
+        >
+
+        <Grid
+            ColumnDefinitions="*,*,*,*,*"
+            RowDefinitions="Auto,Auto"
+            Padding="0,8"
+            RowSpacing="4"
+            VerticalOptions="Center"
+            BackgroundColor="{StaticResource BackgroundSecondary}">
+
+            <!-- HOME -->
+            <Grid
+                Grid.Column="0"
+                Grid.RowSpan="2"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="4">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHomeTapped" />
+                </Grid.GestureRecognizers>
+
+                <Image
+                    Grid.Row="0"
+                    Source="home.svg"
+                    Style="{StaticResource TabIconStyle}">
+
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior
+                            x:Name="HomeIcon" />
+                    </Image.Behaviors>
+
+                </Image>
+
+                <Label
+                    Grid.Row="1"
+                    x:Name="HomeLabel"
+                    Text="Início"
+                    Style="{StaticResource TabLabelStyle}" />
+
+            </Grid>
+
+
+            <!-- ATIVIDADES -->
+            <Grid
+                Grid.Column="1"
+                Grid.RowSpan="2"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="4">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnActivitiesTapped" />
+                </Grid.GestureRecognizers>
+
+                <Image
+                    Grid.Row="0"
+                    Source="stats.svg"
+                    Style="{StaticResource TabIconStyle}">
+
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior
+                            x:Name="ActivitiesIcon" />
+                    </Image.Behaviors>
+
+                </Image>
+
+                <Label
+                    Grid.Row="1"
+                    x:Name="ActivitiesLabel"
+                    Text="Atividades"
+                    Style="{StaticResource TabLabelStyle}" />
+
+            </Grid>
+
+
+            <!-- ADD -->
+            <Border
+                Grid.Column="2"
+                Grid.RowSpan="2"
+                WidthRequest="52"
+                HeightRequest="52"
+                BackgroundColor="{StaticResource Primary}"
+                StrokeThickness="0"
+                StrokeShape="Ellipse"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAddTapped" />
+                </Border.GestureRecognizers>
+
+                <Label
+                    Text="+"
+                    FontSize="32"
+                    FontAttributes="Bold"
+                    TextColor="{StaticResource TextDark}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center" />
+
+            </Border>
+
+
+            <!-- ROTAS -->
+            <Grid
+                Grid.Column="3"
+                Grid.RowSpan="2"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="4">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnRoutesTapped" />
+                </Grid.GestureRecognizers>
+
+                <Image
+                    Grid.Row="0"
+                    Source="road.svg"
+                    Style="{StaticResource TabIconStyle}">
+
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior
+                            x:Name="RoutesIcon" />
+                    </Image.Behaviors>
+
+                </Image>
+
+                <Label
+                    Grid.Row="1"
+                    x:Name="RoutesLabel"
+                    Text="Rotas"
+                    Style="{StaticResource TabLabelStyle}" />
+
+            </Grid>
+
+
+            <!-- PERFIL -->
+            <Grid
+                Grid.Column="4"
+                Grid.RowSpan="2"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="4">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnProfileTapped" />
+                </Grid.GestureRecognizers>
+
+                <Image
+                    Grid.Row="0"
+                    Source="profile.svg"
+                    Style="{StaticResource TabIconStyle}">
+
+                    <Image.Behaviors>
+                        <toolkit:IconTintColorBehavior
+                            x:Name="ProfileIcon" />
+                    </Image.Behaviors>
+
+                </Image>
+
+                <Label
+                    Grid.Row="1"
+                    x:Name="ProfileLabel"
+                    Text="Perfil"
+                    Style="{StaticResource TabLabelStyle}" />
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</ContentView>

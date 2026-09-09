@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:APP.ViewModels"
+             xmlns:comp="clr-namespace:APP.Components"
+             xmlns:conv="clr-namespace:APP.Converters"
+             xmlns:models="clr-namespace:APP.Models"
+             x:Class="APP.Views.RoutesView"
+             x:DataType="vm:RoutesViewModel">
+
+    <Grid
+        RowDefinitions="Auto,Auto,*,Auto"
+        Padding="20,0,20,90">
+
+        <Label
+            Grid.Row="0"
+            Style="{StaticResource LabelTitle}"
+            Text="Rotas"/>
+
+        <HorizontalStackLayout Grid.Row="1"
+                               Spacing="20"
+                               Margin="0,16,0,10">
+            <Label
+                Style="{StaticResource LabelBody}"
+                Text="Favoritas"
+                FontFamily="InterBold"
+                TextColor="{Binding ShowingFavoritesOnly, Converter={StaticResource BoolToTabColorConverter}}">
+
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShowFavoritesCommand}"/>
+                </Label.GestureRecognizers>
+
+            </Label>
+
+            <Label
+                Style="{StaticResource LabelBody}"
+                Text="Todas as rotas"
+                TextColor="{Binding ShowingFavoritesOnly, Converter={StaticResource BoolToTabColorConverter}, ConverterParameter=Invert}">
+
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShowAllCommand}"/>
+                </Label.GestureRecognizers>
+
+            </Label>
+        </HorizontalStackLayout>
+
+        <RefreshView
+            Grid.Row="2"
+            Command="{Binding LoadCommand}"
+            IsRefreshing="{Binding IsBusy}">
+
+            <CollectionView
+                ItemsSource="{Binding DisplayedRoutes}">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:RouteListItem">
+                        <comp:CardShell
+                            TapCommand="{Binding OpenCommand}"
+                            TapCommandParameter="{Binding .}">
+
+                            <comp:CardShell.LeftContent>
+                                <Border StrokeShape="RoundRectangle 8"
+                                        Padding="0">
+                                    <Image Source="{Binding ThumbnailPath}"
+                                           Aspect="AspectFill"/>
+                                </Border>
+                            </comp:CardShell.LeftContent>
+
+                            <comp:CardShell.DetailsContent>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Style="{StaticResource LabelBody}"
+                                           FontAttributes="Bold"
+                                           Text="{Binding Title}"/>
+                                    <HorizontalStackLayout Spacing="12">
+                                        <Label Style="{StaticResource LabelSubtitle}"
+                                               Text="{Binding DistanceLabel}"/>
+                                        <Label Style="{StaticResource LabelSubtitle}"
+                                               Text="{Binding ElevationLabel}"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="1"
+                                                           Margin="0,2,0,0">
+                                        <comp:DifficultyStarsView
+                                            Difficulty="{Binding Difficulty}"
+                                            Margin="0,2,0,0"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </comp:CardShell.DetailsContent>
+
+                            <comp:CardShell.TrailingContent>
+                                <VerticalStackLayout Spacing="8"
+                                                     HorizontalOptions="End">
+                                    <Label Text="⋯"
+                                           FontSize="22"
+                                           TextColor="{StaticResource TextSecondary}"
+                                           Padding="8">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding OptionsCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Label Text="{Binding IsFavorite, Converter={StaticResource FavoriteStarConverter}}"
+                                           FontSize="22"
+                                           TextColor="{StaticResource Primary}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleFavoriteCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </VerticalStackLayout>
+                            </comp:CardShell.TrailingContent>
+
+                        </comp:CardShell>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button
+            Grid.Row="3"
+            Text="+ Criar rota"
+            BackgroundColor="{StaticResource Primary}"
+            TextColor="Black"
+            FontAttributes="Bold"
+            CornerRadius="24"
+            HeightRequest="52"
+            Command="{Binding CreateRouteCommand}"/>
+
+    </Grid>
+</ContentView>

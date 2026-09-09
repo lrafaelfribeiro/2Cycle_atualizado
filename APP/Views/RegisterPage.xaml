@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.RegisterPage"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+    <ScrollView>
+        <VerticalStackLayout Padding="30,60,30,30" Spacing="8">
+
+            <Label Text="2Cycle"
+                   Style="{StaticResource LabelTitle}"
+                   HorizontalOptions="Center" />
+
+            <Label Text="Cria a tua conta"
+                   Style="{StaticResource LabelSectionTitle}"
+                   HorizontalOptions="Center"
+                   Margin="0,16,0,4" />
+
+            <Label Text="Junta-te à 2Cycle e começa a tua jornada sobre duas rodas."
+                   Style="{StaticResource LabelSubtitle}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,32" />
+
+            <Label Text="Nome" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <Entry Placeholder="O teu nome completo"
+                       Text="{Binding Name}"
+                       ReturnType="Next"
+                       Completed="NameEntry_Completed"
+                       IsEnabled="{Binding IsNotBusy}" />
+            </Border>
+
+            <Label Text="Email" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,16">
+                <Entry x:Name="EmailEntry"
+                       Placeholder="exemplo@email.com"
+                       Keyboard="Email"
+                       Text="{Binding Email}"
+                       ReturnType="Next"
+                       Completed="EmailEntry_Completed"
+                       IsEnabled="{Binding IsNotBusy}" />
+            </Border>
+
+            <Label Text="Password" Style="{StaticResource LabelSubtitle}" />
+            <Border Style="{StaticResource InputContainer}" Margin="0,4,0,10">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry x:Name="PasswordEntry"
+                           Grid.Column="0"
+                           Placeholder="Cria uma password"
+                           IsPassword="{Binding IsPasswordHidden}"
+                           Text="{Binding Password}"
+                           ReturnType="Go"
+                           ReturnCommand="{Binding RegisterCommand}"
+                           IsEnabled="{Binding IsNotBusy}" />
+
+                    <ImageButton Grid.Column="1"
+                                 Source="{Binding IsPasswordHidden, Converter={StaticResource BoolToEyeIconConverter}}"
+                                 Command="{Binding TogglePasswordCommand}"
+                                 BackgroundColor="Transparent"
+                                 WidthRequest="24"
+                                 HeightRequest="24"
+                                 VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!-- CHECKLIST DE PASSWORD — reflete exatamente a regra do backend, nada de mais nem de menos -->
+            <VerticalStackLayout Spacing="6" Margin="4,4,0,20">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="✓" TextColor="{Binding HasMinLength, Converter={StaticResource BoolToAccentOrMutedConverter}}" />
+                    <Label Style="{StaticResource LabelSubtitle}" Text="Mínimo 8 caracteres"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="✓" TextColor="{Binding HasUppercase, Converter={StaticResource BoolToAccentOrMutedConverter}}" />
+                    <Label Style="{StaticResource LabelSubtitle}" Text="Uma letra maiúscula"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="✓" TextColor="{Binding HasSpecialChar, Converter={StaticResource BoolToAccentOrMutedConverter}}" />
+                    <Label Style="{StaticResource LabelSubtitle}" Text="Um caractere especial (!@#$%...)"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <HorizontalStackLayout Spacing="10" Margin="0,0,0,16">
+                <CheckBox IsChecked="{Binding AcceptedTerms}" Color="{StaticResource Primary}" />
+                <Label Style="{StaticResource LabelSubtitle}" VerticalOptions="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Aceito os " />
+                            <Span Text="Termos de Serviço" TextColor="{StaticResource Primary}" />
+                            <Span Text=" e a " />
+                            <Span Text="Política de Privacidade" TextColor="{StaticResource Primary}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </HorizontalStackLayout>
+
+            <Label Style="{StaticResource LabelAlert}" x:Name="ErrorLabel" Text="{Binding ErrorMessage}" IsVisible="{Binding ErrorMessage}" Margin="0,0,0,16"/>
+
+            <Button Text="Criar Conta"
+                    Margin="0,4,0,12"
+                    Command="{Binding RegisterCommand}" />
+
+            <Button Text="Já tenho conta"
+                    Style="{StaticResource ButtonOutline}"
+                    Clicked="LoginLink_Clicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

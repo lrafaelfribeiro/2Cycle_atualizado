@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Color x:Key="Primary">#A7DE22</Color>
+    <Color x:Key="Secondary">#2ECC71</Color>
+
+    <Color x:Key="BackgroundPrimary">#08080B</Color>
+    <Color x:Key="BackgroundSecondary">#1A1A1D</Color>
+    <Color x:Key="Surface">#1A1A1E</Color>
+
+    <Color x:Key="TextPrimary">#FFFFFF</Color>
+    <Color x:Key="TextSecondary">#A1A1AA</Color>
+    <Color x:Key="TextDisabled">#6B6B74</Color>
+    <Color x:Key="TextDark">#0D0D0F</Color>
+    <Color x:Key="TextDanger">#FF4D4D</Color>
+
+    <Color x:Key="LinkInfo">#4DA3FF</Color>
+
+    <Color x:Key="BorderStroke">#3A3A40</Color>
+    <Color x:Key="DividerColor">#292929</Color>
+
+    <Color x:Key="ProgressBarDisabled">#18181B</Color>
+
+    <!-- Superfície "escura" usada em painéis/cartões destacados (bottom sheets, cartões de stats) -->
+    <Color x:Key="SurfaceAlt">#111214</Color>
+
+    <!-- Acento dourado para avisos/streaks (ex: aviso de GPS desligado) -->
+    <Color x:Key="AccentGold">#E2A62E</Color>
+
+    <!-- Fundo escuro semi-transparente para overlays/modais (ex: ActivityOptionsPage, loading overlay) -->
+    <Color x:Key="OverlayScrim">#CC000000</Color>
+
+    <!-- Cor da "pega" (drag handle) dos bottom sheets -->
+    <Color x:Key="HandleBar">#4A4D54</Color>
+
+</ResourceDictionary>

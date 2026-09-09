@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.RouteDetailPage"
+             xmlns:components="clr-namespace:APP.Components"
+             BackgroundColor="{StaticResource TextDark}">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20"
+                    Spacing="16">
+
+                <!-- Header -->
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                        ColumnSpacing="12">
+                    <ImageButton Grid.Column="0"
+                                 Source="chevron_left.svg"
+                                 BackgroundColor="Transparent"
+                                 HeightRequest="36"
+                                 WidthRequest="36"
+                                 Clicked="OnBackClicked"/>
+
+                    <ImageButton Grid.Column="2"
+                                 Source="{Binding IsFavorite, Converter={StaticResource BoolToIconSourceConverter}, ConverterParameter='star_filled.svg|star_outline.svg'}"
+                                 Command="{Binding ToggleFavoriteCommand}"
+                                 HeightRequest="28"
+                                 WidthRequest="28"/>
+
+                    <ImageButton Grid.Column="3"
+                                 Source="share.svg"
+                                 BackgroundColor="Transparent"
+                                 HeightRequest="28"
+                                 WidthRequest="28"/>
+                </Grid>
+
+                <!-- Título -->
+                <VerticalStackLayout>
+                    <Label Style="{StaticResource LabelTitle}"
+                            Text="{Binding Name}"/>
+
+                    <Label
+                        Style="{StaticResource LabelSubtitle}"
+                        Text="Criada por ti"/>
+
+                    <HorizontalStackLayout Spacing="2">
+                        <components:DifficultyStarsView Difficulty="{Binding Difficulty}" HeightRequest="16"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+
+                <!-- Mapa -->
+                <Border
+                    StrokeShape="RoundRectangle 16"
+                    Stroke="Transparent">
+                    <WebView x:Name="RouteMapWebView"
+                            HeightRequest="190"/>
+                </Border>
+
+                <!-- Stats -->
+                <Border
+                    BackgroundColor="{StaticResource BackgroundSecondary}"
+                    Stroke="{StaticResource BorderStroke}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    >
+                    <Grid
+                        ColumnDefinitions="*,*,*"
+                        Padding="16,16,0,16"
+                        ColumnSpacing="10">
+
+                        <VerticalStackLayout
+                            Grid.Column="0"
+                            Spacing="4">
+                            <Image
+                                HorizontalOptions="Start"
+                                HeightRequest="15"
+                                Source="ruler.svg"/>
+                            <Label Style="{StaticResource LabelSmall}"
+                                    Text="Distância"/>
+                            <Label Style="{StaticResource LabelValue}"
+                                    Text="{Binding DistanceDisplay, StringFormat='{0} km'}"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="4">
+                            <Image
+                                HorizontalOptions="Start"
+                                HeightRequest="15"
+                                Source="mountains.svg"/>
+                            <Label Style="{StaticResource LabelSmall}"
+                                    Text="Elevação"/>
+                            <Label Style="{StaticResource LabelValue}"
+                                    Text="{Binding ElevationGainDisplay, StringFormat='{0} m'}"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Column="2"
+                            Spacing="4">
+                            <Image
+                                HorizontalOptions="Start"
+                                HeightRequest="15"
+                                Source="elevation_up.svg"/>
+                            <Label Style="{StaticResource LabelSmall}"
+                                    Text="Desnível"/>
+                            <Label Style="{StaticResource LabelValue}"
+                                    Text="{Binding NetElevationDisplay, StringFormat='{0} m'}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Gráfico de elevação -->
+                <Border
+                    Stroke="{StaticResource BorderStroke}"
+                    StrokeThickness="0.5"
+                    BackgroundColor="{StaticResource BackgroundSecondary}"
+                    StrokeShape="RoundRectangle 16">
+                    <VerticalStackLayout
+                        Spacing="8"
+                        Padding="16">
+
+                        <Label
+                            Style="{StaticResource LabelSectionTitle}"
+                            Text="Elevação"/>
+
+                        <GraphicsView
+                            x:Name="ElevationChartView"
+                            HeightRequest="160"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+
+                <ActivityIndicator
+                    IsRunning="{Binding IsLoading}"
+                    IsVisible="{Binding IsLoading}"
+                    Color="{StaticResource Primary}"
+                    HorizontalOptions="Center"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:APP.ViewModels"
+             xmlns:core="clr-namespace:APP.Core"
+             x:Class="APP.Views.ActivitySummaryPage"
+             x:DataType="vm:ActivitySummaryViewModel"
+             xmlns:controls="clr-namespace:APP.Controls">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="20">
+
+            <Grid
+                ColumnDefinitions="*, Auto, *">
+
+                <ImageButton
+                    Grid.Column="0"
+                    Source="chevron_left.svg"
+                    BackgroundColor="Transparent"
+                    HeightRequest="36"
+                    WidthRequest="36"
+                    Clicked="OnBackClicked"/>
+
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Center"
+                    Spacing="2">
+                    <Label
+                        FontSize="18"
+                        TextColor="White"
+                        Text="Resumo da Atividade"
+                        FontAttributes="Bold"
+                        FontFamily="InterBold"/>
+
+                    <Label
+                        HorizontalOptions="Center"
+                        Style="{StaticResource LabelSubtitle}"
+                        Text="04 de Setembro, 09:15"/>
+                </VerticalStackLayout>
+
+
+                <ImageButton Grid.Column="3"
+                             Source="share.svg"
+                             BackgroundColor="Transparent"
+                             HeightRequest="28"
+                             WidthRequest="28"/>
+
+            </Grid>
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="10">
+
+                <!-- STATS GRID -->
+                <Border
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20">
+
+                    <Grid
+                        RowDefinitions="Auto, Auto, Auto"
+                        ColumnDefinitions="*, *"
+                        RowSpacing="20">
+
+                        <VerticalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            HorizontalOptions="Center">
+
+                            <Label Style="{StaticResource LabelSubtitle}"
+                                   Text="TEMPO TOTAL"/>
+
+                            <Label Style="{StaticResource LabelValue}"
+                                   Text="{Binding TotalTimeDisplay}"/>
+
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Spacing="4">
+
+                            <Label Style="{StaticResource LabelSubtitle}"
+                                   Text="DISTÂNCIA"/>
+
+                            <HorizontalStackLayout
+                                Spacing="4">
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="{Binding DistanceDisplay}"/>
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="km"/>
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Spacing="4">
+
+                            <Label Style="{StaticResource LabelSubtitle}"
+                                   Text="RITMO MEDIO"/>
+
+                            <HorizontalStackLayout
+                                Spacing="4">
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="{Binding PaceDisplay}"/>
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="min/km"/>
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Spacing="4">
+
+                            <Label Style="{StaticResource LabelSubtitle}"
+                                   Text="VELOCIDADE MÉDIA"/>
+
+                            <HorizontalStackLayout
+                                Spacing="4">
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="{Binding AvgSpeedDisplay}"/>
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="km/h"/>
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Spacing="4">
+
+                            <Label Style="{StaticResource LabelSubtitle}"
+                                   Text="ELEVAÇÃO"/>
+
+                            <HorizontalStackLayout
+                                Spacing="4">
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="{Binding ElevationDisplay}"/>
+
+                                <Label Style="{StaticResource LabelValue}"
+                                       Text="m"/>
+
+                            </HorizontalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- MAPA DO PERCURSO -->
+                <Border StrokeShape="RoundRectangle 16"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Padding="0"
+                        HeightRequest="220">
+                    <WebView x:Name="RouteMapWebView"/>
+                </Border>
+
+                <!-- GRÁFICO DE VELOCIDADE -->
+                <Border Style="{StaticResource PanelCardBorder}">
+
+                    <VerticalStackLayout
+                        Spacing="10">
+
+                        <Label Style="{StaticResource LabelSectionTitle}"
+                               Text="Gráfico de Velocidade"/>
+
+                        <GraphicsView
+                            x:Name="SpeedChartView"
+                            HeightRequest="150"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ZONAS DE VELOCIDADE -->
+                <Border Style="{StaticResource PanelCardBorder}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Style="{StaticResource LabelSectionTitle}"
+                               Text="Zonas de Velocidade"/>
+
+                        <CollectionView ItemsSource="{Binding Zones}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="core:SpeedZoneResult">
+                                    <Grid ColumnDefinitions="70,*,70"
+                                          Padding="0,6"
+                                          ColumnSpacing="10">
+                                        <Label Grid.Column="0"
+                                               Style="{StaticResource LabelBody}"
+                                               Text="{Binding Label}"
+                                               VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Style="{StaticResource LabelSubtitle}"
+                                               Text="{Binding RangeLabel}"
+                                               VerticalOptions="Center"/>
+                                        <Label Grid.Column="2"
+                                               Style="{StaticResource LabelBody}"
+                                               Text="{Binding Percentage, StringFormat='{0:F0}%'}"
+                                               TextColor="{StaticResource Primary}"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

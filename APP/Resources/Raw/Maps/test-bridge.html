@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body style="background:#0D0D0F; color:#A6E22E; font-family:sans-serif; padding:20px;">
+    <h2>Teste da ponte HybridWebView</h2>
+    <div id="status" style="margin-bottom:20px; font-size:16px;">a verificar...</div>
+    <button id="btn" style="font-size:18px; padding:12px 20px;" onclick="enviar()">
+        Tocar para enviar mensagem
+    </button>
+
+    <script>function atualizar(texto) {
+            document.getElementById('status').innerText = texto;
+        }
+
+        // Verifica logo ao carregar, sem precisar de nenhum toque
+        window.addEventListener('load', () => {
+            atualizar('window.HybridWebView existe? ' + (typeof window.HybridWebView));
+        });
+
+        function enviar() {
+            try {
+                window.HybridWebView.SendRawMessage('mensagem de teste');
+                atualizar('ENVIADO OK');
+            } catch (err) {
+                atualizar('ERRO: ' + err.message);
+            }
+        }</script>
+</body>
+</html>

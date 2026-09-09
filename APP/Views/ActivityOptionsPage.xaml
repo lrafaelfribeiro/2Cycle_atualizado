@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="APP.Views.ActivityOptionsPage"
+             xmlns:components="clr-namespace:APP.Components"
+             BackgroundColor="Transparent"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+
+        <BoxView
+            x:Name="Overlay"
+            BackgroundColor="{StaticResource OverlayScrim}">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackgroundTapped"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <VerticalStackLayout
+            x:Name="RootLayout"
+            Spacing="10"
+            Padding="0,0,0,20"
+            VerticalOptions="End"
+            HorizontalOptions="Fill"
+            Margin="16,0"
+            Opacity="0"
+            TranslationY="500">
+
+
+            <Border
+                StrokeShape="RoundRectangle 18"
+                Stroke="{StaticResource BorderStroke}"
+                StrokeThickness="0.5"
+                BackgroundColor="{StaticResource SurfaceAlt}">
+
+
+                <VerticalStackLayout
+                    Spacing="2">
+
+                    <Grid
+                        Padding="0, 20"
+                        HeightRequest="40"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start">
+
+                        <Grid.GestureRecognizers>
+                            <PanGestureRecognizer PanUpdated="OnPanUpdated"/>
+                        </Grid.GestureRecognizers>
+
+                        <BoxView
+                            WidthRequest="40"
+                            HeightRequest="5"
+                            CornerRadius="3"
+                            BackgroundColor="{StaticResource HandleBar}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView Style="{StaticResource DividerLineHorizontal}"/>
+
+                    <components:OptionRowView IconSource="pencil.svg"
+                            Text="Editar atividade"
+                            Tapped="OnEditTapped"/>
+                    <BoxView Style="{StaticResource DividerLineHorizontal}"/>
+
+                    <components:OptionRowView IconSource="share.svg"
+                            Text="Partilhar"
+                            Tapped="OnShareTapped"/>
+                    <BoxView Style="{StaticResource DividerLineHorizontal}"/>
+
+                    <components:OptionRowView IconSource="duplicate.svg"
+                            Text="Duplicar"
+                            Tapped="OnDuplicateTapped"/>
+                    <BoxView Style="{StaticResource DividerLineHorizontal}"/>
+
+                    <components:OptionRowView IconSource="trash.svg"
+                            Text="Eliminar atividade"
+                            TextColor="{StaticResource TextDanger}"
+                            Tapped="OnDeleteTapped"/>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                Text="Cancelar"
+                TextColor="{StaticResource Primary}"
+                BackgroundColor="{StaticResource SurfaceAlt}"
+                FontSize="16"
+                HeightRequest="52"
+                CornerRadius="18"
+                Clicked="OnCancelClicked"/>
+
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="APP.Views.MainTabPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:components="clr-namespace:APP.Components"
+    Shell.NavBarIsVisible="False">
+
+    <Grid SafeAreaEdges="None">
+
+        <ContentView 
+            x:Name="TabContentHost"/>
+
+        <components:CustomTabBar 
+            x:Name="TabBar"
+            VerticalOptions="End"
+            SafeAreaEdges="None, None, None, Container"
+            TabRequested="OnTabRequested" />
+
+    </Grid>
+</ContentPage>

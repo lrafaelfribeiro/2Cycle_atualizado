@@ -1,0 +1,303 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:APP.ViewModels"
+             x:Class="APP.Views.CreateRoutePage"
+             x:DataType="vm:CreateRouteViewModel"
+             BackgroundColor="{StaticResource TextDark}">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="16,16,16,0" RowSpacing="12">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+            <Label Grid.Column="0" Text="←" FontSize="24" TextColor="{StaticResource TextPrimary}"
+                   WidthRequest="44" HeightRequest="44" BackgroundColor="Transparent"
+                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Style="{StaticResource LabelValue}" Grid.Column="1" Text="Criar rota" HorizontalOptions="Center"/>
+            <Label Grid.Column="2" Style="{StaticResource LabelBody}" Text="Guardar" TextColor="{StaticResource Primary}"
+                   VerticalOptions="Center" IsVisible="{Binding HasCalculatedRoute}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10">
+            <Button Grid.Column="0" Text="Ponto a ponto" Command="{Binding SetPointToPointModeCommand}"
+                    BackgroundColor="{Binding IsRoundTrip, Converter={StaticResource ModeButtonBgConverter}, ConverterParameter=false}"
+                    TextColor="{Binding IsRoundTrip, Converter={StaticResource ModeButtonTextConverter}, ConverterParameter=false}"
+                    CornerRadius="20" FontSize="14" />
+            <Button Grid.Column="1" Text="Ida e volta" Command="{Binding SetRoundTripModeCommand}"
+                    BackgroundColor="{Binding IsRoundTrip, Converter={StaticResource ModeButtonBgConverter}, ConverterParameter=true}"
+                    TextColor="{Binding IsRoundTrip, Converter={StaticResource ModeButtonTextConverter}, ConverterParameter=true}"
+                    CornerRadius="20" FontSize="14" />
+        </Grid>
+
+        <Border Grid.Row="2" Stroke="{StaticResource DividerColor}" StrokeShape="RoundRectangle 12" Padding="14"
+                BackgroundColor="{StaticResource SurfaceAlt}" IsVisible="{Binding ShowHint}">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Label Grid.Column="0" Text="👆" FontSize="22" VerticalOptions="Center" />
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Style="{StaticResource LabelBody}" Text="Como funciona" FontAttributes="Bold" />
+                    <Label Style="{StaticResource LabelSubtitle}" Text="Toca no mapa para definir o ponto de partida e o destino da tua rota."/>
+                </VerticalStackLayout>
+                <Label Grid.Column="2" Text="✕" TextColor="{StaticResource TextSecondary}" VerticalOptions="Start">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DismissHintCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+        </Border>
+
+        <Grid 
+            Grid.Row="3">
+            <WebView 
+                x:Name="MapView"
+                Navigating="OnWebViewNavigating" />
+
+            <VerticalStackLayout 
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,10,10,0"
+                Spacing="8">
+                <Border
+                    Stroke="Transparent"
+                    BackgroundColor="#1A1A1CCC"
+                    StrokeShape="RoundRectangle 20"
+                    WidthRequest="40" 
+                    HeightRequest="40"
+                    Padding="0">
+
+                    <Label
+                        Text="⌖"
+                        FontSize="18"
+                        TextColor="{StaticResource TextPrimary}"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center">
+
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LocateMeCommand}" />
+                        </Label.GestureRecognizers>
+
+                    </Label>
+                </Border>
+            </VerticalStackLayout>
+
+            <Border
+                x:Name="SheetPanel"
+                VerticalOptions="End"
+                BackgroundColor="{StaticResource SurfaceAlt}"
+                Stroke="{StaticResource BorderStroke}"
+                StrokeShape="RoundRectangle 20,20,0,0"
+                Padding="0"
+                SizeChanged="OnSheetSizeChanged">
+
+                <VerticalStackLayout 
+                    x:Name="SheetContent"
+                    Spacing="12"
+                    Padding="16,8,16,16">
+
+                    <Grid 
+                        HeightRequest="28"
+                        Margin="0,4">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleSheetCommand}" />
+                            <PanGestureRecognizer PanUpdated="OnHandlePanUpdated" />
+                        </Grid.GestureRecognizers>
+                        <BoxView
+                            HeightRequest="4"
+                            WidthRequest="40"
+                            CornerRadius="2"
+                            Color="{StaticResource HandleBar}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center" />
+                    </Grid>
+
+                    <Border 
+                        Stroke="{StaticResource DividerColor}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="14"
+                        IsVisible="{Binding HasCalculatedRoute}">
+
+                        <Grid 
+                            ColumnDefinitions="*,*">
+
+                            <VerticalStackLayout
+                                Grid.Column="0">
+                                
+                                <Label Style="{StaticResource LabelSubtitle}" Text="Distância"/>
+
+                                <Label Style="{StaticResource LabelValue}" Text="{Binding DistanceLabel}"/>
+
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout
+                                Grid.Column="1">
+
+                                <Label Style="{StaticResource LabelSubtitle}" Text="Elevação"/>
+
+                                <Label Style="{StaticResource LabelValue}" Text="{Binding ElevationLabel}"/>
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </Border>
+
+                    <Grid
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="10"
+                        IsEnabled="{Binding CanEditPoints}"
+                        IsVisible="{Binding IsRoundTrip, Converter={StaticResource InverseBoolConverter}}">
+                        
+                        <VerticalStackLayout 
+                            Grid.Column="0">
+
+                            <Label Style="{StaticResource LabelSubtitle}" Text="Ponto de partida → Destino"/>
+
+                            <Label
+                                Style="{StaticResource LabelBody}"
+                                Text="Toca no mapa para definir os dois pontos" />
+
+                        </VerticalStackLayout>
+
+                        <Border 
+                            Grid.Column="1"
+                            Stroke="{StaticResource DividerColor}"
+                            StrokeShape="RoundRectangle 8"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            Padding="0">
+
+                            <Label
+                                Text="⇅"
+                                FontSize="18"
+                                TextColor="{Binding CanSwap, Converter={StaticResource SwapEnabledColorConverter}}"
+                                HorizontalTextAlignment="Center" 
+                                VerticalTextAlignment="Center">
+
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SwapPointsCommand}" />
+                                </Label.GestureRecognizers>
+
+                            </Label>
+                        </Border>
+                    </Grid>
+
+                    <VerticalStackLayout
+                        Grid.Row="5"
+                        Spacing="10"
+                        IsVisible="{Binding IsRoundTrip}"
+                        IsEnabled="{Binding CanEditPoints}">
+
+                        <Label
+                            Style="{StaticResource LabelSubtitle}"
+                            Text="Distância desejada" />
+
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            Padding="14,10"
+                            BackgroundColor="{StaticResource Surface}">
+
+                            <Label
+                                Grid.Column="0"
+                                Text="{Binding DesiredDistanceKm, StringFormat='{0:F0}'}"
+                                TextColor="{StaticResource TextPrimary}"
+                                FontSize="34"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Grid.Column="1"
+                                Style="{StaticResource LabelBodyMuted}"
+                                Text="km"
+                                VerticalOptions="End"
+                                Margin="0,0,0,4" />
+
+                        </Grid>
+
+                        <Slider
+                            Minimum="5"
+                            Maximum="100"
+                            Value="{Binding DesiredDistanceKm, Mode=TwoWay}"
+                            MinimumTrackColor="{StaticResource Primary}"
+                            MaximumTrackColor="{StaticResource DividerColor}"
+                            ThumbColor="{StaticResource Primary}" />
+
+                        <Grid 
+                            ColumnDefinitions="*,*,*,*">
+
+                            <Label Style="{StaticResource LabelSmall}" Grid.Column="0" Text="5 km" HorizontalOptions="Start" />
+                            <Label Style="{StaticResource LabelSmall}" HorizontalOptions="Center" Grid.Column="1" Text="25 km"/>
+                            <Label Style="{StaticResource LabelSmall}" HorizontalOptions="Center" Grid.Column="2" Text="50 km"/>
+                            <Label Style="{StaticResource LabelSmall}" Grid.Column="3" Text="100 km" HorizontalOptions="End" />
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+
+                    <VerticalStackLayout
+                        Spacing="10">
+
+                        <Label
+                            Text="Nome da Rota"
+                            TextColor="{StaticResource TextPrimary}"
+                            IsVisible="{Binding HasCalculatedRoute}"
+                            />
+
+                        <Border 
+                            Stroke="{StaticResource BorderStroke}"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="14,0"
+                            IsVisible="{Binding HasCalculatedRoute}">
+
+                            <Entry
+                            Placeholder="Dá um nome à tua rota"
+                            MaxLength="50"
+                            Text="{Binding RouteName}"
+                            TextColor="{StaticResource TextPrimary}"
+                            PlaceholderColor="Gray"
+                            IsVisible="{Binding HasCalculatedRoute}" />
+
+                        </Border>
+
+                    </VerticalStackLayout>
+
+                    <Button
+                        Text="Calcular rota"
+                        Command="{Binding CalculateRouteCommand}"
+                        IsEnabled="{Binding CanCalculate}"
+                        IsVisible="{Binding HasCalculatedRoute, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="{StaticResource DividerColor}"
+                        TextColor="{StaticResource Primary}"
+                        FontAttributes="Bold" />
+
+                    <Button
+                        Text="Recalcular rota"
+                        Command="{Binding RecalculateRouteCommand}"
+                        IsVisible="{Binding HasCalculatedRoute}"
+                        BackgroundColor="{StaticResource DividerColor}"
+                        TextColor="{StaticResource Primary}"
+                        FontAttributes="Bold" />
+
+                    <Button
+                        Text="Guardar rota"
+                        Command="{Binding SaveCommand}"
+                        IsVisible="{Binding HasCalculatedRoute}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="{StaticResource TextDark}"
+                        FontAttributes="Bold" />
+
+                    <ActivityIndicator
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        Color="{StaticResource Primary}" />
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>

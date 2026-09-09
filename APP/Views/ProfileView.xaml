@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:APP.ViewModels"
+             x:Class="APP.Views.ProfileView"
+             x:DataType="vm:ProfileViewModel"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,0,20,20" Spacing="20">
+
+            <Label Style="{StaticResource LabelTitle}" Text="Perfil"/>
+
+            <VerticalStackLayout Spacing="6">
+                <Label Style="{StaticResource LabelValue}" Text="{Binding Username}"/>
+                <Label Style="{StaticResource LabelBody}" Text="{Binding CyclingSinceDisplay}"
+                       TextColor="{StaticResource Primary}"
+                       IsVisible="{Binding CyclingSinceDisplay, Converter={StaticResource StringToBoolConverter}}"/>
+            </VerticalStackLayout>
+
+            <Border StrokeShape="RoundRectangle 16" Stroke="{StaticResource BorderStroke}" StrokeThickness="0.5" BackgroundColor="{StaticResource BackgroundSecondary}" Padding="20">
+                <VerticalStackLayout Spacing="16">
+                    <Label Style="{StaticResource LabelBody}" FontAttributes="Bold" Text="Os teus números"/>
+
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="18">
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="4">
+                            <Label Style="{StaticResource LabelSubtitle}" Text="ATIVIDADES"/>
+                            <Label Style="{StaticResource LabelValue}" Text="{Binding TotalActivities}"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="4">
+                            <Label Style="{StaticResource LabelSubtitle}" Text="DISTÂNCIA TOTAL"/>
+                            <Label Style="{StaticResource LabelValue}" Text="{Binding TotalDistanceDisplay}"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="4">
+                            <Label Style="{StaticResource LabelSubtitle}" Text="TEMPO TOTAL"/>
+                            <Label Style="{StaticResource LabelValue}" Text="{Binding TotalTimeDisplay}"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="4">
+                            <Label Style="{StaticResource LabelSubtitle}" Text="ELEVAÇÃO TOTAL"/>
+                            <Label Style="{StaticResource LabelValue}" Text="{Binding TotalElevationDisplay}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

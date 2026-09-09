@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Components.PauseControlRowView"
+             x:Name="Root">
+    <Grid ColumnDefinitions="70,*,70" ColumnSpacing="15">
+
+        <Border Style="{StaticResource ControlCircleBorder}">
+            <Label Style="{StaticResource LabelValue}" TextColor="{StaticResource Primary}" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding Icon, Source={x:Reference Root}}"/>
+        </Border>
+
+        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+            <Label Style="{StaticResource LabelBody}" Text="{Binding Title, Source={x:Reference Root}}"/>
+            <Label Style="{StaticResource LabelBody}" Text="{Binding Description, Source={x:Reference Root}}"/>
+        </VerticalStackLayout>
+
+        <Switch Grid.Column="2"
+                IsToggled="{Binding IsToggled, Source={x:Reference Root}}"
+                OnColor="{Binding SwitchOnColor, Source={x:Reference Root}}"
+                ThumbColor="{Binding SwitchThumbColor, Source={x:Reference Root}}"
+                VerticalOptions="Center"/>
+
+    </Grid>
+</ContentView>

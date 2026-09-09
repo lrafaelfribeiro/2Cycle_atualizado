@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="APP.Views.ActionSheetPage"
+             xmlns:components="clr-namespace:APP.Components"
+             BackgroundColor="Transparent"
+             >
+
+    <Grid>
+
+        <BoxView
+            x:Name="Overlay"
+            BackgroundColor="{StaticResource OverlayScrim}">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackgroundTapped"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <VerticalStackLayout
+            x:Name="RootLayout"
+            Spacing="10"
+            Padding="0,0,0,20"
+            VerticalOptions="End"
+            HorizontalOptions="Fill"
+            Margin="16,0"
+            Opacity="0"
+            TranslationY="500">
+
+            <Border
+                StrokeShape="RoundRectangle 18"
+                StrokeThickness="0.5"
+                BackgroundColor="{StaticResource SurfaceAlt}">
+
+                <VerticalStackLayout Spacing="2">
+
+                    <Grid
+                        Padding="0,20"
+                        HeightRequest="40"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start">
+
+                        <Grid.GestureRecognizers>
+                            <PanGestureRecognizer PanUpdated="OnPanUpdated"/>
+                        </Grid.GestureRecognizers>
+
+                        <BoxView
+                            WidthRequest="40"
+                            HeightRequest="5"
+                            CornerRadius="3"
+                            BackgroundColor="{StaticResource HandleBar}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                    </Grid>
+                    <BoxView Style="{StaticResource DividerLineHorizontal}"/>
+
+                    <VerticalStackLayout
+                        x:Name="OptionsHost"
+                        BindableLayout.ItemsSource="{Binding}"
+                        Spacing="0">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="components:ActionSheetOption">
+                                <VerticalStackLayout Spacing="2">
+                                    <components:OptionRowView
+                                        IconSource="{Binding IconSource}"
+                                        Text="{Binding Text}"
+                                        TextColor="{Binding IsDestructive, Converter={StaticResource BoolToDestructiveColorConverter}}"
+                                        Tapped="OnOptionTapped"
+                                        BindingContext="{Binding .}"/>
+                                    <BoxView Style="{StaticResource DividerLineHorizontal}"
+                                             IsVisible="{Binding IsLast, Converter={StaticResource InverseBoolConverter}}"/>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <Button
+                Text="Cancelar"
+                TextColor="{StaticResource Primary}"
+                BackgroundColor="{StaticResource SurfaceAlt}"
+                FontSize="16"
+                HeightRequest="52"
+                CornerRadius="18"
+                Clicked="OnCancelClicked"/>
+
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
