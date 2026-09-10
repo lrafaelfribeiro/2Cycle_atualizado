@@ -9,6 +9,7 @@ namespace APP.ViewModels
     public partial class CreateRouteViewModel : ObservableObject
     {
         private readonly IRouteService _routeService;
+        private readonly IRouteSaveCoordinator _routeSaveCoordinator;
         private const string HintDismissedKey = "CreateRouteHintDismissed";
 
         public event Action<List<RoutePointResponse>>? DrawRouteRequested;
@@ -18,9 +19,10 @@ namespace APP.ViewModels
         public event Action<bool>? LockChanged;      // novo
         public event Action? MapClearRequested;
 
-        public CreateRouteViewModel(IRouteService routeService)
+        public CreateRouteViewModel(IRouteService routeService, IRouteSaveCoordinator routeSaveCoordinator)
         {
             _routeService = routeService;
+            _routeSaveCoordinator = routeSaveCoordinator;
         }
 
         [ObservableProperty] private bool isRoundTrip;
@@ -40,6 +42,7 @@ namespace APP.ViewModels
         private Guid? _lastSuggestedRouteId;
         private double _distanceMeters;
         private double _elevationGainMeters;
+        private bool _hasStartedSave;
 
         public string DistanceLabel => $"{_distanceMeters / 1000:F2} km";
         public string ElevationLabel => $"{_elevationGainMeters:F0} m";
@@ -193,27 +196,17 @@ namespace APP.ViewModels
             MapClearRequested?.Invoke(); // limpa marcadores + linha no mapa
             LockChanged?.Invoke(false);  // desbloqueia para poderes tocar em novos pontos
         }
-
         [RelayCommand]
         private async Task SaveAsync()
         {
-            if (_lastSuggestedRouteId is null || IsBusy) return;
+            if (_lastSuggestedRouteId is null || _hasStartedSave) return;
 
-            IsBusy = true;
-            try
-            {
-                await _routeService.SaveAsync(_lastSuggestedRouteId.Value, RouteName);
-                await Shell.Current.GoToAsync("..");
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlertAsync("Não foi possível guardar", ex.Message, "OK");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            _hasStartedSave = true;
+            _routeSaveCoordinator.StartSave(_lastSuggestedRouteId.Value, RouteName);
+
+            await Shell.Current.GoToAsync("..");
         }
+
 
         [RelayCommand]
         private async Task GoBackAsync() => await Shell.Current.GoToAsync("..");

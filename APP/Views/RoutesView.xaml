@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:APP.ViewModels"
              xmlns:comp="clr-namespace:APP.Components"
              xmlns:conv="clr-namespace:APP.Converters"
-             xmlns:models="clr-namespace:APP.Models"
+             xmlns:models="clr-namespace:APP.Models.Routes"
              x:Class="APP.Views.RoutesView"
              x:DataType="vm:RoutesViewModel">
 
@@ -64,11 +64,33 @@
                             TapCommandParameter="{Binding .}">
 
                             <comp:CardShell.LeftContent>
-                                <Border StrokeShape="RoundRectangle 8"
-                                        Padding="0">
-                                    <Image Source="{Binding ThumbnailPath}"
-                                           Aspect="AspectFill"/>
-                                </Border>
+                                <Grid>
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            Padding="0"
+                                            IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Ready}">
+                                        <Image Source="{Binding ThumbnailPath}"
+                                               Aspect="AspectFill"/>
+                                    </Border>
+
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            BackgroundColor="{StaticResource SurfaceMuted}"
+                                            IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Pending}">
+                                        <ActivityIndicator IsRunning="True"
+                                                           Color="{StaticResource TextSecondary}"
+                                                           HeightRequest="20"
+                                                           WidthRequest="20"/>
+                                    </Border>
+
+                                    <Border StrokeShape="RoundRectangle 8"
+                                            BackgroundColor="{StaticResource SurfaceMuted}"
+                                            IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Failed}">
+                                        <Label Text="!"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource Destructive}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Border>
+                                </Grid>
                             </comp:CardShell.LeftContent>
 
                             <comp:CardShell.DetailsContent>
@@ -76,24 +98,35 @@
                                     <Label Style="{StaticResource LabelBody}"
                                            FontAttributes="Bold"
                                            Text="{Binding Title}"/>
-                                    <HorizontalStackLayout Spacing="12">
+
+                                    <!-- Estado Ready: métricas normais -->
+                                    <HorizontalStackLayout Spacing="12"
+                                                           IsVisible="{Binding State, Converter={StaticResource RouteStateToReadyConverter}}">
                                         <Label Style="{StaticResource LabelSubtitle}"
                                                Text="{Binding DistanceLabel}"/>
                                         <Label Style="{StaticResource LabelSubtitle}"
                                                Text="{Binding ElevationLabel}"/>
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Spacing="1"
-                                                           Margin="0,2,0,0">
+                                                           Margin="0,2,0,0"
+                                                           IsVisible="{Binding State, Converter={StaticResource RouteStateToReadyConverter}}">
                                         <comp:DifficultyStarsView
                                             Difficulty="{Binding Difficulty}"
                                             Margin="0,2,0,0"/>
                                     </HorizontalStackLayout>
+
+                                    <!-- Estado Failed: mensagem de erro -->
+                                    <Label Style="{StaticResource LabelSubtitle}"
+                                           TextColor="{StaticResource Destructive}"
+                                           Text="{Binding SaveErrorMessage}"
+                                           IsVisible="{Binding State, Converter={StaticResource RouteStateToFailedConverter}}"/>
                                 </VerticalStackLayout>
                             </comp:CardShell.DetailsContent>
 
                             <comp:CardShell.TrailingContent>
                                 <VerticalStackLayout Spacing="8"
-                                                     HorizontalOptions="End">
+                                                     HorizontalOptions="End"
+                                                     IsVisible="{Binding State, Converter={StaticResource RouteStateToReadyConverter}}">
                                     <Label Text="⋯"
                                            FontSize="22"
                                            TextColor="{StaticResource TextSecondary}"

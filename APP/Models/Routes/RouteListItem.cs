@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
 using APP.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace APP.Models
+namespace APP.Models.Routes
 {
+
     public partial class RouteListItem : ObservableObject
     {
         public Guid Id { get; set; }
@@ -18,12 +17,33 @@ namespace APP.Models
         public List<Location> RoutePoints { get; set; } = new();
         public string? ThumbnailPath { get; set; }
 
-        // Muda depois de o item já estar na lista → precisa de notificar a UI
+        // Novo: identifica um placeholder de save em progresso; null nos itens reais
+        public Guid? PendingSaveId { get; private init; }
+
+        [ObservableProperty]
+        private RouteListItemState state = RouteListItemState.Ready;
+
+        [ObservableProperty]
+        private string? saveErrorMessage;
+
         [ObservableProperty]
         private bool isFavorite;
 
         public ICommand? OpenCommand { get; set; }
         public ICommand? OptionsCommand { get; set; }
         public ICommand? ToggleFavoriteCommand { get; set; }
+
+        public static RouteListItem CreatePlaceholder(Guid pendingSaveId, string? name) => new()
+        {
+            PendingSaveId = pendingSaveId,
+            Title = string.IsNullOrWhiteSpace(name) ? "A criar a sua rota..." : name,
+            State = RouteListItemState.Pending
+        };
+        public enum RouteListItemState
+        {
+            Pending,
+            Ready,
+            Failed
+        }
     }
 }

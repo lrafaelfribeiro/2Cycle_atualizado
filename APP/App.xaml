@@ -27,6 +27,7 @@
             <converters:BoolToTabColorConverter x:Key="BoolToTabColorConverter"/>
             <converters:BoolToIconSourceConverter x:Key="BoolToIconSourceConverter" />
             <converters:DifficultyToStarFillConverter x:Key="DifficultyToStarFillConverter" />
+            <converters:RouteStateVisibilityConverter x:Key="RouteStateVisibilityConverter" />
 
             <components:HexagonDrawable
                 x:Key="HexagonDrawable"

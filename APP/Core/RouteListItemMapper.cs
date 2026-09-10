@@ -4,9 +4,9 @@ using System.Linq;
 using System.Windows.Input;
 using APP.DTOs.Routes;
 using APP.DTOs.Routes.Responses;
-using APP.Models;
+using APP.Models.Routes;
 
-namespace APP.Mappers
+namespace APP.Core
 {
     public static class RouteListItemMapper
     {

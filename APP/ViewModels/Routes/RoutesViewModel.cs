@@ -1,13 +1,17 @@
 ﻿using APP.Components;
+using APP.Core;
+using APP.Core.Messages;
 using APP.DTOs.Routes;
-using APP.Mappers;
 using APP.Models;
+using APP.Models.Routes;
 using APP.Services.Routes;
 using APP.Services.Thumbnails;
 using APP.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using static APP.Models.Routes.RouteListItem;
 
 namespace APP.ViewModels
 {
@@ -15,6 +19,7 @@ namespace APP.ViewModels
     {
         private readonly IRouteService _routeService;
         private readonly IRouteThumbnailService _thumbnailService;
+        private readonly IRouteSaveCoordinator _routeSaveCoordinator;
         private List<RouteListItem> _allRoutes = new();
 
         private const string RenameResultKey = "rename";
@@ -26,11 +31,6 @@ namespace APP.ViewModels
             new() { IconSource = "trash.svg", Text = "Eliminar rota", ResultKey = DeleteResultKey, IsDestructive = true },
         };
 
-        public RoutesViewModel(IRouteService routeService, IRouteThumbnailService thumbnailService)
-        {
-            _routeService = routeService;
-            _thumbnailService = thumbnailService;
-        }
 
         [ObservableProperty]
         private ObservableCollection<RouteListItem> displayedRoutes = new();
@@ -40,6 +40,31 @@ namespace APP.ViewModels
 
         [ObservableProperty]
         private bool isBusy;
+        public RoutesViewModel(IRouteService routeService, IRouteThumbnailService thumbnailService, IRouteSaveCoordinator routeSaveCoordinator)
+        {
+            _routeService = routeService;
+            _thumbnailService = thumbnailService;
+            _routeSaveCoordinator = routeSaveCoordinator;
+
+            RegisterSaveMessages();
+        }
+
+        private void RegisterSaveMessages()
+        {
+            // Guarda contra registo duplicado — se a VM for reaproveitada
+            // (cache de tab do MainTabPage), o construtor só corre uma vez,
+            // mas mantém a verificação por segurança/robustez.
+            if (WeakReferenceMessenger.Default.IsRegistered<RouteSaveCompletedMessage>(this))
+            {
+                return;
+            }
+
+            WeakReferenceMessenger.Default.Register<RouteSaveCompletedMessage>(this, (r, m) =>
+                ((RoutesViewModel)r).OnRouteSaveCompleted(m));
+
+            WeakReferenceMessenger.Default.Register<RouteSaveFailedMessage>(this, (r, m) =>
+                ((RoutesViewModel)r).OnRouteSaveFailed(m));
+        }
 
         [RelayCommand]
         private async Task LoadAsync()
@@ -58,23 +83,60 @@ namespace APP.ViewModels
                     string? path = await _thumbnailService.GetOrCreateThumbnailPathAsync(
                         r.SuggestedRouteId, points);
 
-                    return r with { ThumbnailPath = path }; // OK aqui — SavedRouteSummaryResponse É record
+                    return r with { ThumbnailPath = path };
                 }));
 
                 _allRoutes = withThumbnails
                     .Select(r => RouteListItemMapper.FromResponse(
-                        r,
-                        OpenCommand,
-                        OptionsCommand,
-                        ToggleFavoriteCommand))
+                        r, OpenCommand, OptionsCommand, ToggleFavoriteCommand))
                     .ToList();
 
+                InsertPendingPlaceholders();
                 ApplyFilter();
             }
             finally
             {
                 IsBusy = false;
             }
+        }
+
+
+        // Cobre saves que arrancaram noutra página e ainda não terminaram
+        // quando esta lista é (re)carregada.
+        private void InsertPendingPlaceholders()
+        {
+            foreach (var pending in _routeSaveCoordinator.GetPendingSaves())
+            {
+                _allRoutes.Insert(0, RouteListItem.CreatePlaceholder(pending.PendingSaveId, pending.RouteName));
+            }
+        }
+
+        private async void OnRouteSaveCompleted(RouteSaveCompletedMessage message)
+        {
+            // A fonte da verdade é o backend — recarregar é mais simples e correto
+            // do que tentar reconstruir manualmente o item (evita duplicar a
+            // lógica de thumbnail/mapper que já vive em LoadAsync).
+            try
+            {
+                await LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                // logging / toast de erro, conforme o resto do projeto
+            }
+        }
+
+        private void OnRouteSaveFailed(RouteSaveFailedMessage message)
+        {
+            var placeholder = _allRoutes.FirstOrDefault(r => r.PendingSaveId == message.PendingSaveId);
+            if (placeholder is null)
+            {
+                return;
+            }
+
+            placeholder.State = RouteListItemState.Failed;
+            placeholder.SaveErrorMessage = message.ErrorMessage;
+            ApplyFilter();
         }
 
         [RelayCommand]

@@ -112,6 +112,8 @@ namespace APP.Extensions
 
             services.AddScoped<IRouteThumbnailService, RouteThumbnailService>();
 
+            services.AddSingleton<IRouteSaveCoordinator, RouteSaveCoordinator>();
+
             return services;
         }
 
