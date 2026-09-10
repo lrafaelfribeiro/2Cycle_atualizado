@@ -61,14 +61,11 @@ namespace APP.ViewModels
                 await _syncService.SyncAsync();
                 var localActivities = await _repository.GetAllActivitiesAsync(userId);
 
-                var items = new List<ActivityListItem>();
-                foreach (var activity in localActivities)
-                {
-                    items.Add(await ActivityListItemMapper.MapAsync(
-                        activity, _repository, _thumbnailService,
+                var items = await Task.WhenAll(localActivities.Select(activity =>
+                    ActivityListItemMapper.MapAsync(
+                        activity, _repository, _thumbnailService, _syncService,
                         openCommand: OpenActivityCommand,
-                        optionsCommand: ShowOptionsCommand));
-                }
+                        optionsCommand: ShowOptionsCommand)));
 
                 Activities = new ObservableCollection<ActivityListItem>(items);
                 HasNoActivities = Activities.Count == 0;

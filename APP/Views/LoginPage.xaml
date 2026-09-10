@@ -1,6 +1,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="APP.Views.LoginPage">
+             x:Class="APP.Views.LoginPage"
+             xmlns:components="clr-namespace:APP.Components">
 
     <Grid>
 
@@ -16,7 +17,8 @@
             <VerticalStackLayout
                 Margin="0,250,0,0"
                 Padding="30,0"
-                Spacing="8">
+                Spacing="8"
+                IsEnabled="{Binding IsNotBusy}">
 
                 <Label Text="Email"
                        Style="{StaticResource LabelSubtitle}"/>
@@ -35,16 +37,13 @@
                 <Label Text="Password"
                        Style="{StaticResource LabelSubtitle}"/>
 
-                <Border Style="{StaticResource InputContainer}"
-                        Margin="0,4,0,8">
-                    <Entry x:Name="PasswordEntry"
-                           IsPassword="True"
-                           VerticalOptions="Center"
-                           Text="{Binding Password}"
-                           ReturnType="Go"
-                           ReturnCommand="{Binding LoginCommand}"
-                           IsEnabled="{Binding IsNotBusy}"/>
-                </Border>
+                <components:PasswordEntryView
+                    x:Name="PasswordEntryControl"
+                    Text="{Binding Password}"
+                    Placeholder="A tua password"
+                    ReturnType="Go"
+                    ReturnCommand="{Binding LoginCommand}"
+                    IsEnabled="{Binding IsNotBusy}"/>
 
                 <Label Style="{StaticResource LabelAlert}"
                        x:Name="ErrorLabel"
@@ -54,14 +53,28 @@
 
                 <Button Text="Entrar"
                         Margin="0,20,0,12"
-                        Command="{Binding LoginCommand}"/>
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsNotBusy}"/>
 
                 <Button Text="Criar conta"
                         Style="{StaticResource ButtonOutline}"
-                        Command="{Binding GoToRegisterCommand}"/>
+                        Command="{Binding GoToRegisterCommand}"
+                        IsEnabled="{Binding IsNotBusy}"/>
 
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- OVERLAY DE BLOQUEIO — a rede de segurança real -->
+        <Grid
+            IsVisible="{Binding IsBusy}"
+            InputTransparent="False"
+            BackgroundColor="#66000000">
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Color="White"/>
+        </Grid>
 
     </Grid>
 

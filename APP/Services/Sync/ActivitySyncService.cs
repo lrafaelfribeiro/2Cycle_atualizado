@@ -94,6 +94,15 @@ namespace APP.Services.Sync
                         continue; // já a temos (gravada neste dispositivo, ou já puxada antes)
 
                     await _repository.InsertRemoteSummaryAsync(MapToLocalSummary(remote, userId));
+
+                    // Traz logo o track desta atividade nova. Sem isto, a lista não tem
+                    // pontos GPS para gerar o mapa até o utilizador abrir o detalhe (o
+                    // lazy load original só existia para poupar dados ao ABRIR uma
+                    // atividade específica) — o que faz o thumbnail parecer "em falta"
+                    // logo na primeira sincronização entre dispositivos. Só corre para
+                    // atividades novas (o continue acima já filtra as conhecidas), por
+                    // isso o custo de rede extra fica limitado ao necessário.
+                    await EnsureTrackDownloadedAsync(remote.Id);
                 }
             }
             catch

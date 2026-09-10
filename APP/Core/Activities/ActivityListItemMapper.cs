@@ -1,6 +1,7 @@
 ﻿using APP.Models;
 using APP.Models.Local;
 using APP.Services.LocalStorage;
+using APP.Services.Sync;
 using APP.Services.Thumbnails;
 using Microsoft.Maui.Devices.Sensors;
 using System.Globalization;
@@ -18,10 +19,22 @@ namespace APP.Core
             LocalActivity activity,
             IActivityLocalRepository repository,
             IRouteThumbnailService thumbnailService,
+            IActivitySyncService syncService,
             ICommand? openCommand = null,
             ICommand? optionsCommand = null)
         {
             var routePoints = await LoadRoutePointsAsync(activity.Id, repository);
+
+            // Auto-reparação: atividades sincronizadas de outro dispositivo antes do
+            // fix ao PullRemoteActivitiesAsync ficaram sem track local. Se não há
+            // pontos, tenta descarregar uma vez — depois desta primeira reparação,
+            // HasTrackDataAsync passa a true e este caminho deixa de ser tocado.
+            if (routePoints.Count < 2)
+            {
+                await syncService.EnsureTrackDownloadedAsync(activity.Id);
+                routePoints = await LoadRoutePointsAsync(activity.Id, repository);
+            }
+
             string? thumbnailPath = await TryGetThumbnailAsync(activity.Id, routePoints, thumbnailService);
 
             return new ActivityListItem

@@ -40,11 +40,17 @@ namespace APP.ViewModels
 
         [ObservableProperty]
         private bool isBusy;
+        [ObservableProperty] private bool isInitialLoading;
 
         [RelayCommand]
         private async Task LoadAsync()
         {
+            if (IsBusy) return;
             IsBusy = true;
+
+            bool isFirstLoad = DisplayedRoutes.Count == 0;
+            if (isFirstLoad) IsInitialLoading = true;
+
             try
             {
                 var routes = await _routeService.GetSavedAsync(favoritesOnly: false);
@@ -74,6 +80,7 @@ namespace APP.ViewModels
             finally
             {
                 IsBusy = false;
+                IsInitialLoading = false;
             }
         }
 

@@ -130,5 +130,12 @@
             HeightRequest="52"
             Command="{Binding CreateRouteCommand}"/>
 
+
+        <comp:LoadingOverlayView
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            IsLoading="{Binding IsInitialLoading}"
+            Message="A carregar rotas..."/>
+
     </Grid>
 </ContentView>
