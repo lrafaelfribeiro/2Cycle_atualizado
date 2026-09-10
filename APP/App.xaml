@@ -14,7 +14,6 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:BoolToAccentOrMutedConverter x:Key="BoolToDestructiveColorConverter" />
             <converters:BoolToAccentOrMutedConverter x:Key="BoolToAccentOrMutedConverter" />
             <converters:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter" />
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
@@ -27,6 +26,7 @@
             <converters:BoolToTabColorConverter x:Key="BoolToTabColorConverter"/>
             <converters:BoolToIconSourceConverter x:Key="BoolToIconSourceConverter" />
             <converters:DifficultyToStarFillConverter x:Key="DifficultyToStarFillConverter" />
+            <converters:BoolToDestructiveColorConverter x:Key="BoolToDestructiveColorConverter" />
 
             <components:HexagonDrawable
                 x:Key="HexagonDrawable"

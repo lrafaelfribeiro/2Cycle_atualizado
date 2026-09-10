@@ -11,6 +11,7 @@
         <Border
             Grid.Row="0"
             BackgroundColor="#0D0F0D"
+            StrokeShape="RoundRectangle 40"
             WidthRequest="128"
             HeightRequest="128">
 

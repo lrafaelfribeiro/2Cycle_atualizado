@@ -5,6 +5,7 @@ using APP.Services.Sync;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace APP.ViewModels
 {
@@ -14,6 +15,7 @@ namespace APP.ViewModels
         private Guid _activityId;
 
         [ObservableProperty] private bool isLoading = true;
+        [ObservableProperty] private string startedAt = "--";
         [ObservableProperty] private string distanceDisplay = "--";
         [ObservableProperty] private string totalTimeDisplay = "--";
         [ObservableProperty] private string paceDisplay = "--";
@@ -57,6 +59,7 @@ namespace APP.ViewModels
                     return;
                 }
 
+                StartedAt = FormatDateTime(activity.StartedAt);
                 DistanceDisplay = $"{activity.DistanceMeters / 1000.0:F1}";
                 TotalTimeDisplay = TimeSpan.FromSeconds(activity.TotalTimeSeconds).ToString(@"hh\:mm\:ss");
                 AvgSpeedDisplay = $"{activity.AverageSpeedKmh:F1}";
@@ -134,5 +137,16 @@ namespace APP.ViewModels
             int seconds = (int)Math.Round((minutesPerKm - minutes) * 60);
             return $"{minutes:00}:{seconds:00}";
         }
+
+        public static string FormatDateTime(DateTime dateTime)
+        {
+            var culture = new CultureInfo("pt-PT");
+
+            string month = culture.DateTimeFormat.GetMonthName(dateTime.Month);
+            month = char.ToUpper(month[0]) + month.Substring(1);
+
+            return $"{dateTime:dd} de {month}, {dateTime:HH:mm}";
+        }
+
     }
 }

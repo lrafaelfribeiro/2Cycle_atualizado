@@ -93,10 +93,6 @@ namespace APP.ViewModels
                     await ShareActivityAsync(activityId);
                     break;
 
-                case DuplicateResultKey:
-                    await Shell.Current.CurrentPage.DisplayAlertAsync("Em breve", "Duplicar atividade — ainda não implementado.", "OK");
-                    break;
-
                 case DeleteResultKey:
                     bool confirmed = await Shell.Current.CurrentPage.DisplayAlertAsync(
                         "Eliminar atividade", "Esta ação não pode ser desfeita. Tens a certeza?", "Eliminar", "Cancelar");
@@ -114,7 +110,6 @@ namespace APP.ViewModels
         // das opções e o switch que as trata.
         private const string EditResultKey = "edit";
         private const string ShareResultKey = "share";
-        private const string DuplicateResultKey = "duplicate";
         private const string DeleteResultKey = "delete";
 
         // Lista estática porque não depende de estado da instância — evita recriar a
@@ -123,7 +118,6 @@ namespace APP.ViewModels
         {
             new() { IconSource = "pencil.svg", Text = "Editar atividade", ResultKey = EditResultKey },
             new() { IconSource = "share.svg", Text = "Partilhar", ResultKey = ShareResultKey },
-            new() { IconSource = "duplicate.svg", Text = "Duplicar", ResultKey = DuplicateResultKey },
             new() { IconSource = "trash.svg", Text = "Eliminar atividade", ResultKey = DeleteResultKey, IsDestructive = true },
         };
 
