@@ -36,7 +36,7 @@
                     <Label
                         HorizontalOptions="Center"
                         Style="{StaticResource LabelSubtitle}"
-                        Text="04 de Setembro, 09:15"/>
+                        Text="{Binding StartedAt}"/>
                 </VerticalStackLayout>
 
 

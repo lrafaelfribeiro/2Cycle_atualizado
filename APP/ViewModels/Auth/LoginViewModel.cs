@@ -33,7 +33,7 @@ namespace APP.ViewModels
         [NotifyPropertyChangedFor(nameof(IsNotBusy))]
         private bool isBusy = false;
 
-        private bool IsNotBusy => !IsBusy;
+        public bool IsNotBusy => !IsBusy;
 
         [ObservableProperty]
         private string? errorMessage;
@@ -61,13 +61,11 @@ namespace APP.ViewModels
 
                 if (result.IsSuccess)
                 {
-                    IsBusy = false;
                     Password = string.Empty;
                     await Shell.Current.GoToAsync("//main");
                 }
                 else
                 {
-                    IsBusy = false;
                     ErrorMessage = result.Error!.Message;
                     await _toastService.Show(ErrorMessage);
                 }

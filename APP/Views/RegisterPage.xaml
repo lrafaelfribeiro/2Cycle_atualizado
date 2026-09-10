@@ -118,7 +118,7 @@
 
                 <Button Text="Já tenho conta"
                         Style="{StaticResource ButtonOutline}"
-                        Command="{Binding GoToRegisterCommand}"/>
+                        Command="{Binding GoToLoginCommand}"/>
 
             </VerticalStackLayout>
 

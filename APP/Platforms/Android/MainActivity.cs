@@ -2,6 +2,7 @@
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
+using AndroidX.Core.View;
 
 namespace APP
 {
@@ -21,9 +22,17 @@ namespace APP
 
                 // Não aplicar contraste automático na navigation bar 
                 Window.NavigationBarContrastEnforced = false;
-                
-                 // Não aplicar contraste automático na status bar 
+
+                // Não aplicar contraste automático na status bar 
                 Window.StatusBarContrastEnforced = false;
+
+                // false = texto/ícones brancos
+                // true  = texto/ícones pretos
+                var controller = WindowCompat.GetInsetsController(
+                    Window,
+                    Window.DecorView);
+
+                controller.AppearanceLightStatusBars = false;
             }
 
             Window.SetStatusBarColor(Android.Graphics.Color.Transparent);

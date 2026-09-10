@@ -160,7 +160,7 @@
         </ScrollView>
 
         <VerticalStackLayout
-            Margin="0,70,0,0"
+            Margin="0,120,0,0"
             VerticalOptions="Center"
             HorizontalOptions="Center"
             IsVisible="{Binding IsLoading}"

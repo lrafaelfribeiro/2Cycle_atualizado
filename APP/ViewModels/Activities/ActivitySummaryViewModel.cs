@@ -5,6 +5,7 @@ using APP.Services.Sync;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace APP.ViewModels
 {
@@ -14,6 +15,7 @@ namespace APP.ViewModels
         private Guid _activityId;
 
         [ObservableProperty] private bool isLoading = true;
+        [ObservableProperty] private string startedAt = "--";
         [ObservableProperty] private string distanceDisplay = "--";
         [ObservableProperty] private string totalTimeDisplay = "--";
         [ObservableProperty] private string paceDisplay = "--";
@@ -24,6 +26,7 @@ namespace APP.ViewModels
         public event EventHandler? DataLoaded;
         public List<Location> RoutePoints { get; private set; } = new();
         public List<SpeedSample> SpeedSamples { get; private set; } = new();
+        private bool _isLoadingData;
 
         private readonly IActivitySyncService _syncService;
 
@@ -43,66 +46,80 @@ namespace APP.ViewModels
 
         private async Task LoadAsync()
         {
+            if (_isLoadingData) return;
+            _isLoadingData = true;
             IsLoading = true;
 
-            var activity = await _repository.GetActivityByIdAsync(_activityId);
-            if (activity is null)
+            try
+            {
+                var activity = await _repository.GetActivityByIdAsync(_activityId);
+                if (activity is null)
+                {
+                    IsLoading = false;
+                    return;
+                }
+
+                StartedAt = FormatDateTime(activity.StartedAt);
+                DistanceDisplay = $"{activity.DistanceMeters / 1000.0:F1}";
+                TotalTimeDisplay = TimeSpan.FromSeconds(activity.TotalTimeSeconds).ToString(@"hh\:mm\:ss");
+                AvgSpeedDisplay = $"{activity.AverageSpeedKmh:F1}";
+                ElevationDisplay = $"{activity.ElevationGainMeters:F0}";
+
+                double distanceKm = activity.DistanceMeters / 1000.0;
+                PaceDisplay = distanceKm > 0.05
+                    ? FormatPace(activity.MovingTimeSeconds / 60.0 / distanceKm)
+                    : "--:--";
+
+                // Descarregar os pontos do gps se veio de outro dispositivo
+                await _syncService.EnsureTrackDownloadedAsync(_activityId);
+
+                var segments = await _repository.GetSegmentsAsync(_activityId);
+                var segmentData = new List<(List<LocalTrackPoint> Points, DateTime SegmentStart)>();
+
+                var routePoints = new List<Location>();
+                var speedSamples = new List<SpeedSample>();
+                double cumulativeKm = 0;
+
+                foreach (var segment in segments)
+                {
+                    var points = await _repository.GetPointsAsync(segment.Id);
+                    segmentData.Add((points, segment.StartedAt));
+
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        routePoints.Add(new Location(points[i].Latitude, points[i].Longitude));
+                        if (i == 0) continue; // primeiro ponto do segmento não liga ao segmento anterior (pausa)
+
+                        var prev = points[i - 1];
+                        var curr = points[i];
+                        double deltaSeconds = (curr.RecordedAt - prev.RecordedAt).TotalSeconds;
+                        if (deltaSeconds <= 0) continue;
+
+                        double deltaMeters = GeoMath.HaversineDistanceMeters(prev.Latitude, prev.Longitude, curr.Latitude, curr.Longitude);
+                        double speedKmh = (deltaMeters / deltaSeconds) * 3.6;
+                        if (speedKmh > 180) continue; // mesmo filtro de ruído do resto do app
+
+                        cumulativeKm += deltaMeters / 1000.0;
+                        speedSamples.Add(new SpeedSample(cumulativeKm, speedKmh));
+                    }
+                }
+
+                RoutePoints = routePoints;
+                SpeedSamples = speedSamples;
+
+                var zoneResults = SpeedZoneCalculator.Calculate(segmentData);
+                Zones = new ObservableCollection<SpeedZoneResult>(zoneResults);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Falha ao carregar resumo da atividade: {ex}");
+            }
+            finally
             {
                 IsLoading = false;
-                return;
+                _isLoadingData = false;
             }
 
-            DistanceDisplay = $"{activity.DistanceMeters / 1000.0:F1}";
-            TotalTimeDisplay = TimeSpan.FromSeconds(activity.TotalTimeSeconds).ToString(@"hh\:mm\:ss");
-            AvgSpeedDisplay = $"{activity.AverageSpeedKmh:F1}";
-            ElevationDisplay = $"{activity.ElevationGainMeters:F0}";
-
-            double distanceKm = activity.DistanceMeters / 1000.0;
-            PaceDisplay = distanceKm > 0.05
-                ? FormatPace(activity.MovingTimeSeconds / 60.0 / distanceKm)
-                : "--:--";
-
-            // Descarregar os pontos do gps se veio de outro dispositivo
-            await _syncService.EnsureTrackDownloadedAsync(_activityId);
-
-            var segments = await _repository.GetSegmentsAsync(_activityId);
-            var segmentData = new List<(List<LocalTrackPoint> Points, DateTime SegmentStart)>();
-
-            var routePoints = new List<Location>();
-            var speedSamples = new List<SpeedSample>();
-            double cumulativeKm = 0;
-
-            foreach (var segment in segments)
-            {
-                var points = await _repository.GetPointsAsync(segment.Id);
-                segmentData.Add((points, segment.StartedAt));
-
-                for (int i = 0; i < points.Count; i++)
-                {
-                    routePoints.Add(new Location(points[i].Latitude, points[i].Longitude));
-                    if (i == 0) continue; // primeiro ponto do segmento não liga ao segmento anterior (pausa)
-
-                    var prev = points[i - 1];
-                    var curr = points[i];
-                    double deltaSeconds = (curr.RecordedAt - prev.RecordedAt).TotalSeconds;
-                    if (deltaSeconds <= 0) continue;
-
-                    double deltaMeters = GeoMath.HaversineDistanceMeters(prev.Latitude, prev.Longitude, curr.Latitude, curr.Longitude);
-                    double speedKmh = (deltaMeters / deltaSeconds) * 3.6;
-                    if (speedKmh > 180) continue; // mesmo filtro de ruído do resto do app
-
-                    cumulativeKm += deltaMeters / 1000.0;
-                    speedSamples.Add(new SpeedSample(cumulativeKm, speedKmh));
-                }
-            }
-
-            RoutePoints = routePoints;
-            SpeedSamples = speedSamples;
-
-            var zoneResults = SpeedZoneCalculator.Calculate(segmentData);
-            Zones = new ObservableCollection<SpeedZoneResult>(zoneResults);
-
-            IsLoading = false;
             DataLoaded?.Invoke(this, EventArgs.Empty);
         }
 
@@ -120,5 +137,16 @@ namespace APP.ViewModels
             int seconds = (int)Math.Round((minutesPerKm - minutes) * 60);
             return $"{minutes:00}:{seconds:00}";
         }
+
+        public static string FormatDateTime(DateTime dateTime)
+        {
+            var culture = new CultureInfo("pt-PT");
+
+            string month = culture.DateTimeFormat.GetMonthName(dateTime.Month);
+            month = char.ToUpper(month[0]) + month.Substring(1);
+
+            return $"{dateTime:dd} de {month}, {dateTime:HH:mm}";
+        }
+
     }
 }

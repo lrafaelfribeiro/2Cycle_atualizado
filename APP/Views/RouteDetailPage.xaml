@@ -8,11 +8,11 @@
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20"
-                    Spacing="16">
+                                 Spacing="16">
 
                 <!-- Header -->
                 <Grid ColumnDefinitions="Auto,*,Auto,Auto"
-                        ColumnSpacing="12">
+                      ColumnSpacing="12">
                     <ImageButton Grid.Column="0"
                                  Source="chevron_left.svg"
                                  BackgroundColor="Transparent"
@@ -36,14 +36,15 @@
                 <!-- Título -->
                 <VerticalStackLayout>
                     <Label Style="{StaticResource LabelTitle}"
-                            Text="{Binding Name}"/>
+                           Text="{Binding Name}"/>
 
                     <Label
                         Style="{StaticResource LabelSubtitle}"
                         Text="Criada por ti"/>
 
                     <HorizontalStackLayout Spacing="2">
-                        <components:DifficultyStarsView Difficulty="{Binding Difficulty}" HeightRequest="16"/>
+                        <components:DifficultyStarsView Difficulty="{Binding Difficulty}"
+                                                        HeightRequest="16"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 
@@ -53,7 +54,7 @@
                     StrokeShape="RoundRectangle 16"
                     Stroke="Transparent">
                     <WebView x:Name="RouteMapWebView"
-                            HeightRequest="190"/>
+                             HeightRequest="190"/>
                 </Border>
 
                 <!-- Stats -->
@@ -61,8 +62,7 @@
                     BackgroundColor="{StaticResource BackgroundSecondary}"
                     Stroke="{StaticResource BorderStroke}"
                     StrokeThickness="1"
-                    StrokeShape="RoundRectangle 16"
-                    >
+                    StrokeShape="RoundRectangle 16">
                     <Grid
                         ColumnDefinitions="*,*,*"
                         Padding="16,16,0,16"
@@ -76,9 +76,9 @@
                                 HeightRequest="15"
                                 Source="ruler.svg"/>
                             <Label Style="{StaticResource LabelSmall}"
-                                    Text="Distância"/>
+                                   Text="Distância"/>
                             <Label Style="{StaticResource LabelValue}"
-                                    Text="{Binding DistanceDisplay, StringFormat='{0} km'}"/>
+                                   Text="{Binding DistanceDisplay, StringFormat='{0} km'}"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout
@@ -89,9 +89,9 @@
                                 HeightRequest="15"
                                 Source="mountains.svg"/>
                             <Label Style="{StaticResource LabelSmall}"
-                                    Text="Elevação"/>
+                                   Text="Elevação"/>
                             <Label Style="{StaticResource LabelValue}"
-                                    Text="{Binding ElevationGainDisplay, StringFormat='{0} m'}"/>
+                                   Text="{Binding ElevationGainDisplay, StringFormat='{0} m'}"/>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout
@@ -102,9 +102,9 @@
                                 HeightRequest="15"
                                 Source="elevation_up.svg"/>
                             <Label Style="{StaticResource LabelSmall}"
-                                    Text="Desnível"/>
+                                   Text="Desnível"/>
                             <Label Style="{StaticResource LabelValue}"
-                                    Text="{Binding NetElevationDisplay, StringFormat='{0} m'}"/>
+                                   Text="{Binding NetElevationDisplay, StringFormat='{0} m'}"/>
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
@@ -131,13 +131,12 @@
                 </Border>
 
 
-                <ActivityIndicator
-                    IsRunning="{Binding IsLoading}"
-                    IsVisible="{Binding IsLoading}"
-                    Color="{StaticResource Primary}"
-                    HorizontalOptions="Center"/>
-
             </VerticalStackLayout>
         </ScrollView>
+
+        <components:LoadingOverlayView
+            IsLoading="{Binding IsLoading}"
+            Message="A carregar rota..."/>
+
     </Grid>
 </ContentPage>

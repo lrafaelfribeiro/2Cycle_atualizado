@@ -182,4 +182,5 @@
         <Setter Property="Color" Value="{StaticResource DividerColor}" />
     </Style>
 
+
 </ResourceDictionary>

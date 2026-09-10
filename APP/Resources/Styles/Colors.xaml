@@ -4,10 +4,13 @@
 
     <Color x:Key="Primary">#A7DE22</Color>
     <Color x:Key="Secondary">#2ECC71</Color>
+    <Color x:Key="Destructive">#FF4D4D</Color>
 
     <Color x:Key="BackgroundPrimary">#08080B</Color>
     <Color x:Key="BackgroundSecondary">#1A1A1D</Color>
+
     <Color x:Key="Surface">#1A1A1E</Color>
+    <Color x:Key="SurfaceMuted">#2F2F35</Color>
 
     <Color x:Key="TextPrimary">#FFFFFF</Color>
     <Color x:Key="TextSecondary">#A1A1AA</Color>

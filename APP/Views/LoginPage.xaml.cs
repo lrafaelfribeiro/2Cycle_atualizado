@@ -18,9 +18,5 @@ public partial class LoginPage : ContentPage
         };
     }
 
-    private void EmailEntry_Completed(object sender, EventArgs e)
-    {
-        // Dar foco na password quando clicar no next do email
-        PasswordEntry.Focus();
-    }
+    private void EmailEntry_Completed(object? sender, EventArgs e) => PasswordEntryControl.FocusEntry();
 }
