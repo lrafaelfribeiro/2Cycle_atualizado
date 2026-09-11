@@ -21,6 +21,7 @@ namespace APP.ViewModels
         private readonly IRouteThumbnailService _thumbnailService;
         private readonly IRouteSaveCoordinator _routeSaveCoordinator;
         private List<RouteListItem> _allRoutes = new();
+        private bool _hasLoadedOnce;
 
         private const string RenameResultKey = "rename";
         private const string DeleteResultKey = "delete";
@@ -42,7 +43,7 @@ namespace APP.ViewModels
         private bool isBusy;
 
         [ObservableProperty]
-         private bool isInitialLoading;
+        private bool isInitialLoading;
         public RoutesViewModel(IRouteService routeService, IRouteThumbnailService thumbnailService, IRouteSaveCoordinator routeSaveCoordinator)
         {
             _routeService = routeService;
@@ -57,10 +58,13 @@ namespace APP.ViewModels
             // Guarda contra registo duplicado — se a VM for reaproveitada
             // (cache de tab do MainTabPage), o construtor só corre uma vez,
             // mas mantém a verificação por segurança/robustez.
-            if (WeakReferenceMessenger.Default.IsRegistered<RouteSaveCompletedMessage>(this))
+            if (WeakReferenceMessenger.Default.IsRegistered<RouteSaveStartedMessage>(this))
             {
                 return;
             }
+
+            WeakReferenceMessenger.Default.Register<RouteSaveStartedMessage>(this, (r, m) =>
+                ((RoutesViewModel)r).OnRouteSaveStarted(m));
 
             WeakReferenceMessenger.Default.Register<RouteSaveCompletedMessage>(this, (r, m) =>
                 ((RoutesViewModel)r).OnRouteSaveCompleted(m));
@@ -72,41 +76,61 @@ namespace APP.ViewModels
         [RelayCommand]
         private async Task LoadAsync()
         {
-            if (IsBusy) return;
-            IsBusy = true;
+            // Primeira carga: overlay dedicado, sem tocar no RefreshView
+            // Cargas seguintes (pull-to-refresh): spinner nativo do RefreshView
+            bool isFirstLoad = !_hasLoadedOnce;
 
-            bool isFirstLoad = DisplayedRoutes.Count == 0;
-            if (isFirstLoad) IsInitialLoading = true;
+            if (isFirstLoad)
+            {
+                IsInitialLoading = true;
+            }
+            else
+            {
+                IsBusy = true;
+            }
 
             try
             {
-                var routes = await _routeService.GetSavedAsync(favoritesOnly: false);
-
-                var withThumbnails = await Task.WhenAll(routes.Select(async r =>
-                {
-                    var points = r.PreviewPoints
-                        .Select(p => (p.Latitude, p.Longitude))
-                        .ToList();
-
-                    string? path = await _thumbnailService.GetOrCreateThumbnailPathAsync(
-                        r.SuggestedRouteId, points);
-
-                    return r with { ThumbnailPath = path };
-                }));
-
-                _allRoutes = withThumbnails
-                    .Select(r => RouteListItemMapper.FromResponse(
-                        r, OpenCommand, OptionsCommand, ToggleFavoriteCommand))
-                    .ToList();
-
-                InsertPendingPlaceholders();
-                ApplyFilter();
+                await LoadRoutesInternalAsync();
+                _hasLoadedOnce = true;
             }
             finally
             {
-                IsBusy = false;
                 IsInitialLoading = false;
+                IsBusy = false;
             }
+        }
+
+        // Reload interno, sem tocar em IsBusy — usado quando já há outro
+        // feedback visual a cobrir a espera (ex: skeleton do save em progresso)
+        private async Task ReloadSilentlyAsync()
+        {
+            await LoadRoutesInternalAsync();
+        }
+
+        private async Task LoadRoutesInternalAsync()
+        {
+            var routes = await _routeService.GetSavedAsync(favoritesOnly: false);
+
+            var withThumbnails = await Task.WhenAll(routes.Select(async r =>
+            {
+                var points = r.PreviewPoints
+                    .Select(p => (p.Latitude, p.Longitude))
+                    .ToList();
+
+                string? path = await _thumbnailService.GetOrCreateThumbnailPathAsync(
+                    r.SuggestedRouteId, points);
+
+                return r with { ThumbnailPath = path };
+            }));
+
+            _allRoutes = withThumbnails
+                .Select(r => RouteListItemMapper.FromResponse(
+                    r, OpenCommand, OptionsCommand, ToggleFavoriteCommand))
+                .ToList();
+
+            InsertPendingPlaceholders();
+            ApplyFilter();
         }
 
 
@@ -116,8 +140,26 @@ namespace APP.ViewModels
         {
             foreach (var pending in _routeSaveCoordinator.GetPendingSaves())
             {
+                if (_allRoutes.Any(r => r.PendingSaveId == pending.PendingSaveId))
+                {
+                    continue; // já lá está, inserido via OnRouteSaveStarted
+                }
+
                 _allRoutes.Insert(0, RouteListItem.CreatePlaceholder(pending.PendingSaveId, pending.RouteName));
             }
+        }
+
+        private void OnRouteSaveStarted(RouteSaveStartedMessage message)
+        {
+            // Evita duplicar se, por alguma razão, InsertPendingPlaceholders (no LoadAsync)
+            // já tiver inserido este mesmo save entretanto
+            if (_allRoutes.Any(r => r.PendingSaveId == message.PendingSaveId))
+            {
+                return;
+            }
+
+            _allRoutes.Insert(0, RouteListItem.CreatePlaceholder(message.PendingSaveId, message.RouteName));
+            ApplyFilter();
         }
 
         private async void OnRouteSaveCompleted(RouteSaveCompletedMessage message)
@@ -127,7 +169,7 @@ namespace APP.ViewModels
             // lógica de thumbnail/mapper que já vive em LoadAsync).
             try
             {
-                await LoadAsync();
+                await ReloadSilentlyAsync();
             }
             catch (Exception ex)
             {
