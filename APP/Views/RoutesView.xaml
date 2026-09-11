@@ -101,7 +101,7 @@
 
                                     <!-- Estado Ready: métricas normais -->
                                     <HorizontalStackLayout Spacing="12"
-                                                           IsVisible="{Binding State, Converter={StaticResource RouteStateToReadyConverter}}">
+                                                           IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Ready}">
                                         <Label Style="{StaticResource LabelSubtitle}"
                                                Text="{Binding DistanceLabel}"/>
                                         <Label Style="{StaticResource LabelSubtitle}"
@@ -109,7 +109,7 @@
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Spacing="1"
                                                            Margin="0,2,0,0"
-                                                           IsVisible="{Binding State, Converter={StaticResource RouteStateToReadyConverter}}">
+                                                           IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Ready}">
                                         <comp:DifficultyStarsView
                                             Difficulty="{Binding Difficulty}"
                                             Margin="0,2,0,0"/>
@@ -119,14 +119,14 @@
                                     <Label Style="{StaticResource LabelSubtitle}"
                                            TextColor="{StaticResource Destructive}"
                                            Text="{Binding SaveErrorMessage}"
-                                           IsVisible="{Binding State, Converter={StaticResource RouteStateToFailedConverter}}"/>
+                                           IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Failed}"/>
                                 </VerticalStackLayout>
                             </comp:CardShell.DetailsContent>
 
                             <comp:CardShell.TrailingContent>
                                 <VerticalStackLayout Spacing="8"
                                                      HorizontalOptions="End"
-                                                     IsVisible="{Binding State, Converter={StaticResource RouteStateToReadyConverter}}">
+                                                     IsVisible="{Binding State, Converter={StaticResource RouteStateVisibilityConverter}, ConverterParameter=Ready}">
                                     <Label Text="⋯"
                                            FontSize="22"
                                            TextColor="{StaticResource TextSecondary}"
